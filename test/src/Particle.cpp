@@ -69,6 +69,6 @@ void Particle::draw()
   shader->setUniform("MVP",MVP);
   shader->setUniform("normalMatrix",normalMatrix);
   shader->setUniform("M",M);
-  prim->draw("sphere");
+  prim->draw("cone");
 
 }

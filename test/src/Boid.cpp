@@ -10,27 +10,50 @@
 
 //DO all stuff here (flock is just for boidNumbers AND camera)
 
-Boid::Boid(Flock *_flock)
+Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 {
     //do random position for each boid
-    m_pos=(0.0f,0.0f,0.0f);
+    //m_pos=(0.0f,0.0f,0.0f);
+    m_pos=_pos;
+
+   // m_dir=_dir;
+   //m_dir.m_y=rand->randomPositiveNumber(10)+0.5;
 
     //make slow velocity
     //m_vel=_vel;
 
     //random direction - look in the internet
     ngl::Random *rand=ngl::Random::instance();
-      m_dir.m_x=rand->randomNumber(5)+0.5;
-      m_dir.m_y=rand->randomPositiveNumber(10)+0.5;
-      m_dir.m_z=rand->randomNumber(5)+0.5;
+//    m_dir.m_x=0.01;
+//    m_dir.m_y=0.01;
+//    m_dir.m_z=0.01;
 
-      m_gravity=-9;//4.65;
+    for(float k=-9.5;k<10; k+=1)
+    {
+        m_pos=rand->getRandomVec3();
+        m_dir=rand->getRandomVec3();
+        m_dir *=0.05;
+        //m_scene->addParticle(emitterPos, dir, rng->getRandomColour(), 0.3); // emitterPos, initialSpeed, colour, radius,
+    }
+
+
+
+//      m_dir.m_x=rand->randomNumber(5)+0.5;
+//      m_dir.m_y=rand->randomNumber(5)+0.5;
+//      m_dir.m_z=rand->randomNumber(5)+0.5;
+
+//      m_gravity=-9;//4.65;
 
     //acceleration? maybe need as a separate function
     //m_acc=_acc;
 
     m_flock=_flock;
 }
+
+//Boid::~Boid()
+//{
+//dctor
+//}
 
 void Boid::update()
 {
@@ -62,5 +85,5 @@ void Boid::draw()
     shader->setUniform("MVP",MVP);
     shader->setUniform("normalMatrix",normalMatrix);
     shader->setUniform("M",M);
-    prim->draw("sphere");
+    prim->draw("cone");
 }

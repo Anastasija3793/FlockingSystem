@@ -9,7 +9,8 @@ class Flock;
 class Boid
 {
 public:
-    Boid(Flock *_flock);//ngl::Vec3 _vel);
+    Boid(ngl::Vec3 _pos, Flock *_flock);//ngl::Vec3 _vel);
+    //~Boid();
 
     void update();
     void draw();

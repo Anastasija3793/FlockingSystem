@@ -10,8 +10,8 @@
 class Flock
 {
 public:
-    Flock(int _numBoids); //something else is missing
-   // ~Flock(); //is Flock need dctor?
+    Flock(ngl::Vec3 _pos, int _numBoids); //something else is missing
+    ~Flock(); //is Flock need dctor?
 
     void update();
     void draw();
@@ -25,6 +25,7 @@ public:
 private :
       // @brief the position of the emitter
       //ngl::Vec3 m_pos;
+      //ngl::Vec3 m_dir;
 
       /// @brief the number of boids
       int m_numBoids;

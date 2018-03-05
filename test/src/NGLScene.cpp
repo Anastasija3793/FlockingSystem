@@ -96,12 +96,15 @@ void NGLScene::initializeGL()
 
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
   prim->createSphere("sphere",0.1,40);
+  prim->createCone("cone",0.2,0.7f,20,20);
 
 //  m_wind.set(1,1,1);
-//  m_emitter.reset(new Emitter(ngl::Vec3(0,0,0),400,&m_wind));
+//  m_emitter.reset(new Emitter(ngl::Vec3(0,0,0),200,&m_wind)); //400
 //  m_emitter->setCam(&m_cam);
 //  m_emitter->setShaderName("Phong");
-  m_flock.reset(new Flock(200));
+
+  //m_flock.reset(new Flock(ngl::Vec3(0,0,0),ngl::Vec3(0,0,0),200));
+  m_flock.reset(new Flock(ngl::Vec3(0,0,0),10)); //200
   m_flock->setCam(&m_cam);
   m_flock->setShaderName("Phong");
 
@@ -173,9 +176,11 @@ void NGLScene::paintGL()
 	switch(m_selectedObject)
 	{
         case 0 : m_flock->draw(); break;
+        //case 0 : m_emitter->draw(); break;
         //case 0 : prim->draw("teapot"); break;
 		case 1 : prim->draw("sphere"); break;
-        case 2 : prim->draw("cube"); break;
+        //case 2 : prim->draw("cube"); break;
+        case 2 : prim->draw("cone"); break;
 	}
 	m_text->renderText(10,10,"Qt Gui Demo");
 }
@@ -186,7 +191,8 @@ void NGLScene::timerEvent(QTimerEvent *_event )
 {
     if(_event->timerId() ==   m_particleTimer)
     {
-        m_emitter->update();
+        //m_emitter->update();
+        m_flock->update();
         update();
     }
 
