@@ -30,7 +30,7 @@ private :
       /// @brief the number of boids
       int m_numBoids;
       /// @brief the container for the particles
-      std::vector <Boid> m_boids;
+      std::vector<Boid>m_boids;
 
     /// @brief the name of the shader to use
     std::string m_shaderName;

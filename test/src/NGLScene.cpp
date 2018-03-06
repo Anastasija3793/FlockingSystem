@@ -20,7 +20,7 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent )
 	m_wireframe=false;
 	m_rotation=0.0;
 	m_scale=1.0;
-	m_position=0.0;
+    m_position=0.0;
 
 	m_selectedObject=0;
 }
@@ -38,7 +38,7 @@ void NGLScene::initializeGL()
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
   /// create our camera
-  ngl::Vec3 eye(5,5,5); //(2,2,2)
+  ngl::Vec3 eye(10,10,10); //(2,2,2)
   ngl::Vec3 look(0,0,0);
   ngl::Vec3 up(0,1,0);
 
