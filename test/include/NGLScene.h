@@ -114,7 +114,7 @@ protected:
   /// @brief our camera
 	ngl::Camera m_cam;
 	/// @brief our transform for objects
-	ngl::Transformation m_transform;
+    ngl::Transformation m_transform;
 private :
   /// @brief this method is called every time a mouse is moved
   /// @param _event the Qt Event structure
@@ -131,6 +131,9 @@ private :
   /// @param _event the Qt Event structure
   void mouseReleaseEvent (QMouseEvent *_event );
   void wheelEvent( QWheelEvent* _event );
+
+
+   ngl::Mat4 m_mouseGlobalTX;
 
   void loadMatricesToShader( );
 

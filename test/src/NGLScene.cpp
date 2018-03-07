@@ -1,3 +1,6 @@
+#include <QGuiApplication>
+#include <QMouseEvent>
+
 #include "NGLScene.h"
 #include <iostream>
 #include <ngl/Vec3.h>
@@ -38,7 +41,7 @@ void NGLScene::initializeGL()
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
   /// create our camera
-  ngl::Vec3 eye(10,10,10); //(2,2,2)
+  ngl::Vec3 eye(10,10,10); //(2,2,2) //10,10,10
   ngl::Vec3 look(0,0,0);
   ngl::Vec3 up(0,1,0);
 
@@ -139,11 +142,17 @@ void NGLScene::loadMatricesToShader()
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
   ngl::Mat4 M;
-  M=m_transform.getMatrix();
-  MV=m_cam.getViewMatrix()*M;
-  MVP=m_cam.getProjectionMatrix() *MV;
+//  M=m_transform.getMatrix();
+//  MV=m_cam.getViewMatrix()*M;
+//  MVP=m_cam.getProjectionMatrix() *MV;
+  //-----
+  M = m_mouseGlobalTX;
+  MV = m_cam.getViewMatrix() * M;
+  MVP = m_cam.getVPMatrix() * M;
+  //-----
+
   normalMatrix=MV;
-  normalMatrix.inverse();
+  normalMatrix.inverse().transpose();
   shader->setUniform("MV",MV);
   shader->setUniform("MVP",MVP);
   shader->setUniform("normalMatrix",normalMatrix);
@@ -169,10 +178,24 @@ void NGLScene::paintGL()
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
   (*shader)["Phong"]->use();
 
-	m_transform.setPosition(m_position);
-	m_transform.setScale(m_scale);
-	m_transform.setRotation(m_rotation);
-	loadMatricesToShader();
+//-----
+  ngl::Mat4 rotX;
+  ngl::Mat4 rotY;
+  // create the rotation matrices
+  rotX.rotateX( m_win.spinXFace );
+  rotY.rotateY( m_win.spinYFace );
+  // multiply the rotations
+  m_mouseGlobalTX = rotX * rotY;
+  // add the translations
+  m_mouseGlobalTX.m_m[ 3 ][ 0 ] = m_modelPos.m_x;
+  m_mouseGlobalTX.m_m[ 3 ][ 1 ] = m_modelPos.m_y;
+  m_mouseGlobalTX.m_m[ 3 ][ 2 ] = m_modelPos.m_z;
+//-----
+
+//    m_transform.setPosition(m_position);
+//    m_transform.setScale(m_scale);
+//    m_transform.setRotation(m_rotation);
+    loadMatricesToShader();
 	switch(m_selectedObject)
 	{
         case 0 : m_flock->draw(); break;

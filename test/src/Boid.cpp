@@ -20,9 +20,6 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
     max_vel=0.005;
     //m_vel=normalize(target - m_pos)*max_vel;
 
-    //rotated in the direction of velocity
-    //theta = @velocity.heading() + @p.radians(90);
-    //rotate(theta);
 
     //random direction - look in the internet
     ngl::Random *rand=ngl::Random::instance();
@@ -32,14 +29,14 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
     //for(float k=-9.5;k<10; k+=1)
     //{
-        m_angle=10.0f;
+        //m_angle=10.0f;
         //m_angle=rand->randomNumber(5);
+        m_forward.normalize();
         m_pos=rand->getRandomVec3();
         m_vel=rand->getRandomNormalizedVec3();
         //m_vel=rand->getRandomVec3();
         m_vel *=0.05;
 
-        //m_scene->addParticle(emitterPos, dir, rng->getRandomColour(), 0.3); // emitterPos, initialSpeed, colour, radius,
     //}
 
 
@@ -50,8 +47,8 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
 
 
-
-
+//m_angle=acos(m_forward.dot(m_vel)/(m_forward.length()*m_vel.length()));
+m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length())));
 
         //SEEK
    //m_vel=(target-m_pos)*max_vel;
@@ -73,16 +70,11 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
 void Boid::update()
 {
-    double radians=M_PI / 180;
-    m_thetaX=m_vel.m_x + radians*90;
-    m_thetaY=m_vel.m_y + radians*90;
-    m_thetaZ=m_vel.m_z + radians*90;
-   // m_pos+=m_dir;//m_vel?
-    //m_angle+=0.5f;
-   // m_angleX=m_vel.m_x;
-   // m_angleY=m_vel.m_y;
-   // m_angleZ=m_vel.m_z;
+    //m_forward=m_vel;
     m_pos+=m_vel;
+
+    //std::cout<<"Angle= "<<m_angle;
+    //std::cout<<"ForwardX= "<<m_forward.m_x;
 
 }
 
@@ -97,8 +89,9 @@ void Boid::draw()
     ngl::ShaderLib *shader=ngl::ShaderLib::instance();
     shader->use(m_flock->getShaderName());
     transform.setPosition(m_pos);
+    transform.setRotation(m_angle,m_angle,m_angle);
     //transform.setRotation(m_angleX,m_angleY,m_angleZ);
-    transform.setRotation(m_thetaX,m_thetaY,m_thetaZ);
+    //transform.setRotation(m_thetaX,m_thetaY,m_thetaZ);
     ngl::Mat4 MV;
     ngl::Mat4 MVP;
     ngl::Mat3 normalMatrix;

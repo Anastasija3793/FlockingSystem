@@ -30,17 +30,13 @@ private:
     //acceleration
     ngl::Vec3 m_acc;
 
+    ngl::Vec3 m_forward {1,0,1};
+
     GLfloat m_gravity;
 
     ngl::Vec3 m_target;
 
-    float m_thetaX;
-    float m_thetaY;
-    float m_thetaZ;
     float m_angle;
-    float m_angleX;
-    float m_angleY;
-    float m_angleZ;
     ngl::Vec3 m_rotation;
 
     const Flock *m_flock; //const?
