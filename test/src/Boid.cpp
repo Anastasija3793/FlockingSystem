@@ -13,53 +13,59 @@
 
 Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 {
-    //ngl::Vec3 target(3,-3,-2);
+    //m_gravity=-9;//4.65;
     //do random position for each boid
     m_pos=_pos;
+    //_pos=m_pos;
+    m_acc.set(0,0,0);
+    //m_target.set(-2,-2,-0.1);
 
-    max_vel=0.005;
-    //m_vel=normalize(target - m_pos)*max_vel;
-
+    max_speed = 4;
+    max_force = 0.1;
+    //max_speed = 0.05;
+    //max_force = 20;
 
     //random direction - look in the internet
     ngl::Random *rand=ngl::Random::instance();
-//    m_dir.m_x=0.01; //m_dir.m_x=rand->randomNumber(5)+0.5;
-//    m_dir.m_y=0.01; //m_dir.m_y=rand->randomNumber(5)+0.5;
-//    m_dir.m_z=0.01; //m_dir.m_z=rand->randomNumber(5)+0.5;
 
     //for(float k=-9.5;k<10; k+=1)
     //{
-        //m_angle=10.0f;
-        //m_angle=rand->randomNumber(5);
         m_forward.normalize();
         m_pos=rand->getRandomVec3();
-        m_vel=rand->getRandomNormalizedVec3();
-        //m_vel=rand->getRandomVec3();
+        //m_pos.set(-10,0,0);
+        //m_vel.set(0,0,0);
+        //m_vel=rand->getRandomNormalizedVec3();
+        m_vel=rand->getRandomVec3();
         m_vel *=0.05;
-
+        m_target=rand->getRandomVec3();
     //}
 
+    //m_angle=acos(m_forward.dot(m_vel)/(m_forward.length()*m_vel.length()));
+    m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length())));
+//    if (m_angle>90)
+//    {
+//        m_angle=-m_angle;
+//    }
 
-//      m_gravity=-9;//4.65;
 
-    //acceleration? maybe need as a separate function
-    //m_acc=_acc;
+    m_desired = m_target - m_pos;
+    m_desired.normalize();
+    m_desired*= max_speed;
+    m_steer = m_desired - m_vel;
+//    auto copySteer = m_steer;
+//    copySteer.normalize();
+    m_steer.normalize();
+
+    auto NormS = m_steer;
+    auto speed = m_steer.length();
+    if (speed > max_force)
+    {
+        NormS.normalize();
+        m_steer = NormS * max_force;
+    }
 
 
-
-//m_angle=acos(m_forward.dot(m_vel)/(m_forward.length()*m_vel.length()));
-m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length())));
-
-        //SEEK
-   //m_vel=(target-m_pos)*max_vel;
-
-//    m_vel=rand->getRandomVec3();
-//    desired_vel=(target - m_pos) * max_vel;
-//    m_steer = desired_vel - m_vel;
-//        m_vel.m_x = sin((M_PI/180)*m_angle) * 0.0005 * 50;
-//        m_vel.m_y = cos((M_PI/180)*m_angle)* 0.0005 * 50;
-//        m_vel.m_z = cos((M_PI/180)*m_angle)* 0.0005 * 50;
-
+    m_acc+=m_steer;
     m_flock=_flock;
 }
 
@@ -71,13 +77,22 @@ m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length(
 void Boid::update()
 {
     //m_forward=m_vel;
+    m_vel+=m_acc;
+
+    auto NormV = m_vel;
+    auto speed = m_vel.length();
+    if (speed > max_speed)
+    {
+        NormV.normalize();
+        m_vel = NormV * max_speed;
+    }
+
     m_pos+=m_vel;
+    m_acc*=0;
 
     //std::cout<<"Angle= "<<m_angle;
     //std::cout<<"ForwardX= "<<m_forward.m_x;
-
 }
-
 
 //draw function with shader and camera
 //from jm
@@ -89,15 +104,16 @@ void Boid::draw()
     ngl::ShaderLib *shader=ngl::ShaderLib::instance();
     shader->use(m_flock->getShaderName());
     transform.setPosition(m_pos);
-    transform.setRotation(m_angle,m_angle,m_angle);
-    //transform.setRotation(m_angleX,m_angleY,m_angleZ);
-    //transform.setRotation(m_thetaX,m_thetaY,m_thetaZ);
+    transform.setRotation(0,m_angle,m_angle);
     ngl::Mat4 MV;
     ngl::Mat4 MVP;
     ngl::Mat3 normalMatrix;
     ngl::Mat4 M;
     M=transform.getMatrix();
     MV=m_flock->getCam()->getViewMatrix()*transform.getMatrix();
+    MV.rotateX(360);
+//    MV.rotateY(m_angle);
+//    MV.rotateZ(90);
 
     MVP=m_flock->getCam()->getProjectionMatrix() *MV;
     normalMatrix=MV;

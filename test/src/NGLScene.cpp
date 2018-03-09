@@ -107,7 +107,7 @@ void NGLScene::initializeGL()
 //  m_emitter->setShaderName("Phong");
 
   //m_flock.reset(new Flock(ngl::Vec3(0,0,0),ngl::Vec3(0,0,0),200));
-  m_flock.reset(new Flock(ngl::Vec3(0,0,0),10)); //200
+  m_flock.reset(new Flock(ngl::Vec3(0,0,0),100)); //200
   m_flock->setCam(&m_cam);
   m_flock->setShaderName("Phong");
 

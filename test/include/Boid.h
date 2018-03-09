@@ -23,18 +23,20 @@ private:
 
     ngl::Vec3 max_vel;
 
-    ngl::Vec3 desired_vel;
+    ngl::Vec3 m_desired;
+    ngl::Vec3 m_target;
     ngl::Vec3 m_steer;
+
     //direction
-    ngl::Vec3 m_dir;
+    //ngl::Vec3 m_dir;
     //acceleration
     ngl::Vec3 m_acc;
+    float max_speed;
+    float max_force;
 
     ngl::Vec3 m_forward {1,0,1};
 
     GLfloat m_gravity;
-
-    ngl::Vec3 m_target;
 
     float m_angle;
     ngl::Vec3 m_rotation;
