@@ -15,11 +15,16 @@
 //----------------------------------------------------------------------------------------------------------------------
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent )
 {
+    //const std::string &_oname, const std::string &_tname //for bbox
 
   // set this widget to have the initial keyboard focus
   setFocus();
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
   this->resize(_parent->size());
+
+    m_showBBox=true;
+//    m_objFileName=_oname;
+//    m_textureFileName=_tname;
 	m_wireframe=false;
 	m_rotation=0.0;
 	m_scale=1.0;
@@ -100,6 +105,7 @@ void NGLScene::initializeGL()
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
   prim->createSphere("sphere",0.1,40);
   prim->createCone("cone",0.2,0.7f,20,20);
+  prim->createLineGrid("wall", 10, 10, 5);
 
 //  m_wind.set(1,1,1);
 //  m_emitter.reset(new Emitter(ngl::Vec3(0,0,0),200,&m_wind)); //400
@@ -111,6 +117,11 @@ void NGLScene::initializeGL()
   m_flock->setCam(&m_cam);
   m_flock->setShaderName("Phong");
 
+
+  m_mesh.reset(  new ngl::Obj(m_objFileName,m_textureFileName));
+  // now we need to create this as a VAO so we can draw it
+  m_mesh->createVAO();
+  m_mesh->calcBoundingSphere();
 
 
   m_text.reset(  new  ngl::Text(QFont("Arial",18)));
@@ -142,13 +153,13 @@ void NGLScene::loadMatricesToShader()
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
   ngl::Mat4 M;
-//  M=m_transform.getMatrix();
-//  MV=m_cam.getViewMatrix()*M;
-//  MVP=m_cam.getProjectionMatrix() *MV;
+  M=m_mouseGlobalTX*m_transform.getMatrix();
+  MV=m_cam.getViewMatrix()*M;
+  MVP=m_cam.getProjectionMatrix() *MV;
   //-----
-  M = m_mouseGlobalTX;
-  MV = m_cam.getViewMatrix() * M;
-  MVP = m_cam.getVPMatrix() * M;
+//  M = m_mouseGlobalTX;
+//  MV = m_cam.getViewMatrix() * M;
+//  MVP = m_cam.getVPMatrix() * M;
   //-----
 
   normalMatrix=MV;
@@ -191,14 +202,25 @@ void NGLScene::paintGL()
   m_mouseGlobalTX.m_m[ 3 ][ 1 ] = m_modelPos.m_y;
   m_mouseGlobalTX.m_m[ 3 ][ 2 ] = m_modelPos.m_z;
 //-----
+  m_transform.reset();
 
 //    m_transform.setPosition(m_position);
 //    m_transform.setScale(m_scale);
 //    m_transform.setRotation(m_rotation);
     loadMatricesToShader();
+
+//    if(m_showBBox==true)
+//    {
+//      loadMatricesToShader();
+//      shader->setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
+//      m_mesh->drawBBox();
+//    }
+
+    prim->draw("wall");
+
 	switch(m_selectedObject)
 	{
-        case 0 : m_flock->draw(); break;
+        case 0 : m_flock->draw(m_mouseGlobalTX); break;
         //case 0 : m_emitter->draw(); break;
         //case 0 : prim->draw("teapot"); break;
 		case 1 : prim->draw("sphere"); break;

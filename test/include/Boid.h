@@ -2,6 +2,7 @@
 #define BOID_H
 
 #include <ngl/Vec3.h>
+#include <ngl/Mat4.h>
 #include <ngl/Colour.h>
 
 class Flock;
@@ -13,7 +14,7 @@ public:
     //~Boid();
 
     void update();
-    void draw();
+    void draw(const ngl::Mat4 &_globalMouseTx);
 
 private:
     //position
@@ -34,12 +35,12 @@ private:
     float max_speed;
     float max_force;
 
-    ngl::Vec3 m_forward {1,0,1};
+    //ngl::Vec3 m_forward {1,0,1};
 
-    GLfloat m_gravity;
+    //GLfloat m_gravity;
 
-    float m_angle;
-    ngl::Vec3 m_rotation;
+    //float m_angle;
+    //ngl::Vec3 m_rotation;
 
     const Flock *m_flock; //const?
 };

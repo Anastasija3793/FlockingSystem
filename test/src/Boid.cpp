@@ -30,23 +30,18 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
     //for(float k=-9.5;k<10; k+=1)
     //{
-        m_forward.normalize();
+        //m_forward.normalize();
         m_pos=rand->getRandomVec3();
         //m_pos.set(-10,0,0);
-        //m_vel.set(0,0,0);
+        //m_vel.set(0,0,0); //-0.5
         //m_vel=rand->getRandomNormalizedVec3();
         m_vel=rand->getRandomVec3();
         m_vel *=0.05;
         m_target=rand->getRandomVec3();
     //}
 
-    //m_angle=acos(m_forward.dot(m_vel)/(m_forward.length()*m_vel.length()));
-    m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length())));
-//    if (m_angle>90)
-//    {
-//        m_angle=-m_angle;
-//    }
-
+    //angle to face direction
+    //m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length())));
 
     m_desired = m_target - m_pos;
     m_desired.normalize();
@@ -56,6 +51,7 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 //    copySteer.normalize();
     m_steer.normalize();
 
+    // if statement for limiting steering by max force
     auto NormS = m_steer;
     auto speed = m_steer.length();
     if (speed > max_force)
@@ -79,6 +75,7 @@ void Boid::update()
     //m_forward=m_vel;
     m_vel+=m_acc;
 
+    // if statement for limiting velocity by max speed
     auto NormV = m_vel;
     auto speed = m_vel.length();
     if (speed > max_speed)
@@ -95,8 +92,8 @@ void Boid::update()
 }
 
 //draw function with shader and camera
-//from jm
-void Boid::draw()
+//modified (start from jm)
+void Boid::draw(const ngl::Mat4 &_globalMouseTx)
 {
     // get the VBO instance and draw the built in teapot
     ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
@@ -104,16 +101,18 @@ void Boid::draw()
     ngl::ShaderLib *shader=ngl::ShaderLib::instance();
     shader->use(m_flock->getShaderName());
     transform.setPosition(m_pos);
-    transform.setRotation(0,m_angle,m_angle);
+    //transform.setRotation(0,m_angle,m_angle);
+    //transform.setScale(0.5,0.5,0.5);
     ngl::Mat4 MV;
     ngl::Mat4 MVP;
     ngl::Mat3 normalMatrix;
     ngl::Mat4 M;
     M=transform.getMatrix();
-    MV=m_flock->getCam()->getViewMatrix()*transform.getMatrix();
+    MV=m_flock->getCam()->getViewMatrix()*_globalMouseTx*transform.getMatrix();
+    //rotate towards direction
     MV.rotateX(360);
-//    MV.rotateY(m_angle);
-//    MV.rotateZ(90);
+    MV.rotateY(360);
+    MV.rotateZ(360);
 
     MVP=m_flock->getCam()->getProjectionMatrix() *MV;
     normalMatrix=MV;

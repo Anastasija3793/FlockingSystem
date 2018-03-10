@@ -14,7 +14,7 @@ public:
     ~Flock(); //is Flock need dctor?
 
     void update();
-    void draw();
+    void draw(const ngl::Mat4 &_globalMouseTx);
 
     //for camera and shader
     inline void setCam(ngl::Camera *_cam){m_cam=_cam;}

@@ -2,6 +2,7 @@
 #define NGLSCENE_H_
 
 #include <ngl/Camera.h>
+#include <ngl/Obj.h>
 #include <ngl/Transformation.h>
 #include <ngl/Vec3.h>
 #include <ngl/Text.h>
@@ -133,10 +134,16 @@ private :
   void wheelEvent( QWheelEvent* _event );
 
 
-   ngl::Mat4 m_mouseGlobalTX;
+  //show bbox
+  bool m_showBBox;
+  std::string m_objFileName;
+  std::string m_textureFileName;
+  //mouse
+  ngl::Mat4 m_mouseGlobalTX;
 
   void loadMatricesToShader( );
 
+  std::unique_ptr<ngl::Obj> m_mesh;
 
   /// @brief flag for the fps timer
   int m_fpsTimer;
