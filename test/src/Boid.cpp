@@ -19,6 +19,7 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
     //_pos=m_pos;
     m_acc.set(0,0,0);
     //m_target.set(-2,-2,-0.1);
+    //m_target.set(-30,30,0);
 
     max_speed = 4;
     max_force = 0.1;
@@ -45,6 +46,10 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
     m_desired = m_target - m_pos;
     m_desired.normalize();
+//    auto d = m_desired;
+//    d.normalize();
+
+
     m_desired*= max_speed;
     m_steer = m_desired - m_vel;
 //    auto copySteer = m_steer;
@@ -63,12 +68,14 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
     m_acc+=m_steer;
     m_flock=_flock;
+
+    m_hit=false;
 }
 
-//Boid::~Boid()
-//{
-//dctor
-//}
+Boid::Boid()
+{
+    m_hit=false;
+}
 
 void Boid::update()
 {

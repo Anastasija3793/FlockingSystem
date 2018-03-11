@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ngl Qt Demo</string>
+   <string>Flocking System</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="s_mainWindowGridLayout">
@@ -172,7 +172,7 @@
         <widget class="QComboBox" name="m_objectSelection">
          <item>
           <property name="text">
-           <string>Teapot</string>
+           <string>Flocking</string>
           </property>
          </item>
          <item>
@@ -182,7 +182,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Cube</string>
+           <string>Cone</string>
           </property>
          </item>
         </widget>
@@ -238,7 +238,7 @@
      <x>0</x>
      <y>0</y>
      <width>1138</width>
-     <height>28</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

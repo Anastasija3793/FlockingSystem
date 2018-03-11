@@ -2,7 +2,6 @@
 #define NGLSCENE_H_
 
 #include <ngl/Camera.h>
-#include <ngl/Obj.h>
 #include <ngl/Transformation.h>
 #include <ngl/Vec3.h>
 #include <ngl/Text.h>
@@ -11,7 +10,8 @@
 #include <QResizeEvent>
 #include <QOpenGLWidget>
 #include <memory>
-#include "Emitter.h"
+#include <ngl/BBox.h>
+//#include "Emitter.h"
 
 #include "Flock.h"
 
@@ -133,22 +133,17 @@ private :
   void mouseReleaseEvent (QMouseEvent *_event );
   void wheelEvent( QWheelEvent* _event );
 
-
-  //show bbox
-  bool m_showBBox;
-  std::string m_objFileName;
-  std::string m_textureFileName;
+  //bbox
+  std::unique_ptr<ngl::BBox> m_bbox;
   //mouse
   ngl::Mat4 m_mouseGlobalTX;
 
   void loadMatricesToShader( );
 
-  std::unique_ptr<ngl::Obj> m_mesh;
-
   /// @brief flag for the fps timer
   int m_fpsTimer;
   /// @brief the fps to draw
-  std::unique_ptr<Emitter> m_emitter;
+  //std::unique_ptr<Emitter> m_emitter;
 
   std::unique_ptr<Flock>m_flock;
 
@@ -156,10 +151,14 @@ private :
   /// @brief the particle update timer
   int m_particleTimer;
   /// @brief a wind vector
-  ngl::Vec3 m_wind;
-
+  //ngl::Vec3 m_wind;
 
   void timerEvent(QTimerEvent *);
+
+  std::vector <Boid> m_boidArray;
+  void BBoxCollision();
+
+
 };
 
 #endif

@@ -24,8 +24,7 @@ SOURCES+= $$PWD/src/NGLScene.cpp \
     src/Particle.cpp \
     src/Emitter.cpp \
     src/Boid.cpp \
-    src/Flock.cpp \
-    src/BoidBehaviour.cpp
+    src/Flock.cpp
 # same for the .h files
 HEADERS+= $$PWD/include/NGLScene.h \
           $$PWD/include/MainWindow.h \
@@ -33,8 +32,7 @@ HEADERS+= $$PWD/include/NGLScene.h \
     include/Particle.h \
     include/Emitter.h \
     include/Boid.h \
-    include/Flock.h \
-    include/BoidBehaviour.h
+    include/Flock.h
 
 
 FORMS+= $$PWD/ui/MainWindow.ui
