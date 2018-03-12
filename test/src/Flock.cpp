@@ -72,6 +72,7 @@ void Flock::BBoxCollision()
             ngl::Vec3 d =m_bbox->getNormalArray()[i]*x;
             b.setVel(b.getVel()-d);
             b.setHit();
+            b.m_angle+=180;
           }//end of hit test
          }//end of each face test
         }//end of for

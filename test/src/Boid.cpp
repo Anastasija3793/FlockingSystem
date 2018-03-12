@@ -17,6 +17,7 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
     //do random position for each boid
     m_pos=_pos;
     //_pos=m_pos;
+    m_angle=360;
     m_acc.set(0,0,0);
     //m_target.set(-2,-2,-0.1);
     //m_target.set(-30,30,0);
@@ -118,9 +119,9 @@ void Boid::draw(const ngl::Mat4 &_globalMouseTx)
     M=transform.getMatrix();
     MV=m_flock->getCam()->getViewMatrix()*_globalMouseTx*transform.getMatrix();
     //rotate towards direction
-    MV.rotateX(360); //180 to make it rotate "inside"
-    MV.rotateY(360);
-    MV.rotateZ(360);
+    MV.rotateX(m_angle); //180 to make it rotate "inside"
+    MV.rotateY(m_angle);
+    MV.rotateZ(m_angle);
     //MV.scale(0.8,0.8,0.8);
 
     MVP=m_flock->getCam()->getProjectionMatrix() *MV;

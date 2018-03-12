@@ -26,6 +26,8 @@ public:
   inline void setVel(ngl::Vec3 _v){m_vel=_v;}
   inline ngl::Vec3 getVel() const { return m_vel;}
 
+  float m_angle;
+
 private:
     //position
     ngl::Vec3 m_pos;
@@ -52,7 +54,7 @@ private:
 
     //GLfloat m_gravity;
 
-    //float m_angle;
+
     //ngl::Vec3 m_rotation;
 
     const Flock *m_flock; //const?
