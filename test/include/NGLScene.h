@@ -146,6 +146,7 @@ private :
   //std::unique_ptr<Emitter> m_emitter;
 
   std::unique_ptr<Flock>m_flock;
+  //std::unique_ptr<Boid>m_boid;
 
 
   /// @brief the particle update timer
@@ -156,7 +157,9 @@ private :
   void timerEvent(QTimerEvent *);
 
   std::vector <Boid> m_boidArray;
-  void BBoxCollision();
+  //void BBoxCollision();
+//  void checkCollisions();
+//  void updateScene();
 
 
 };

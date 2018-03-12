@@ -22,7 +22,7 @@ public:
     inline bool isHit()const {return m_hit;}
   inline ngl::Vec3 getPos() const {return m_pos;}
   //inline ngl::Vec3 getNextPos() const {return m_nextPos;}
-    //inline GLfloat getRadius() const {return m_radius;}
+    inline GLfloat getRadius() const {return m_radius;}
   inline void setVel(ngl::Vec3 _v){m_vel=_v;}
   inline ngl::Vec3 getVel() const { return m_vel;}
 
@@ -39,6 +39,7 @@ private:
     ngl::Vec3 m_steer;
 
     bool m_hit;
+    GLfloat m_radius;
 
     //direction
     //ngl::Vec3 m_dir;

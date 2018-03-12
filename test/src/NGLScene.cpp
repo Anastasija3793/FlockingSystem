@@ -108,14 +108,13 @@ void NGLScene::initializeGL()
 //  m_emitter->setShaderName("Phong");
 
   //m_flock.reset(new Flock(ngl::Vec3(0,0,0),ngl::Vec3(0,0,0),200));
-  m_flock.reset(new Flock(ngl::Vec3(0,0,0),100)); //200
+  m_flock.reset(new Flock(ngl::Vec3(0,0,0),200)); //100
   m_flock->setCam(&m_cam);
   m_flock->setShaderName("Phong");
 
-
-  m_bbox.reset( new ngl::BBox(ngl::Vec3(),10.0f,10.0f,10.0f));
+  //call again to draw properly
+  m_bbox.reset( new ngl::BBox(ngl::Vec3(),12.0f,12.0f,12.0f));
   m_bbox->setDrawMode(GL_LINE);
-
 
   m_text.reset(  new  ngl::Text(QFont("Arial",18)));
   m_text->setScreenSize(this->size().width(),this->size().height());
@@ -219,48 +218,6 @@ void NGLScene::paintGL()
 }
 
 
-void NGLScene::BBoxCollision()
-{
-  //create an array of the extents of the bounding box
-  float ext[6];
-  ext[0]=ext[1]=(m_bbox->height()/2.0f);
-  ext[2]=ext[3]=(m_bbox->width()/2.0f);
-  ext[4]=ext[5]=(m_bbox->depth()/2.0f);
-  // Dot product needs a Vector so we convert The Point Temp into a Vector so we can
-  // do a dot product on it
-  ngl::Vec3 newP;
-  // D is the distance of the Agent from the Plane. If it is less than ext[i] then there is
-  // no collision
-  GLfloat dist;
-  // Loop for each sphere in the vector list
-  for(Boid &b : m_boidArray)
-  {
-    newP=b.getPos();
-    //Now we need to check the Sphere agains all 6 planes of the BBOx
-    //If a collision is found we change the dir of the Sphere then Break
-    for(int i=0; i<6; ++i)
-    {
-      //to calculate the distance we take the dotporduct of the Plane Normal
-      //with the new point P
-      dist=m_bbox->getNormalArray()[i].dot(p);
-      //Now Add the Radius of the sphere to the offsett
-      dist+=b.getRadius();
-      // If this is greater or equal to the BBox extent /2 then there is a collision
-      //So we calculate the Spheres new direction
-      if(D >=ext[i])
-      {
-        //We use the same calculation as in raytracing to determine the
-        // the new direction
-        GLfloat x= 2*( s.getDirection().dot((m_bbox->getNormalArray()[i])));
-        ngl::Vec3 d =m_bbox->getNormalArray()[i]*x;
-        s.setDirection(s.getDirection()-d);
-        s.setHit();
-      }//end of hit test
-     }//end of each face test
-    }//end of for
-}
-
-
 
 void NGLScene::timerEvent(QTimerEvent *_event )
 {
@@ -268,6 +225,8 @@ void NGLScene::timerEvent(QTimerEvent *_event )
     {
         //m_emitter->update();
         m_flock->update();
+        m_flock->BBoxCollision();
+        //updateScene();
         update();
     }
 

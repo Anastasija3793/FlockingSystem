@@ -22,6 +22,8 @@ public:
     inline void setShaderName(const std::string &_n){m_shaderName=_n;}
     inline const std::string getShaderName()const {return m_shaderName;}
 
+    void BBoxCollision();
+    std::unique_ptr<ngl::BBox> m_bbox;
 private :
       // @brief the position of the emitter
       //ngl::Vec3 m_pos;
