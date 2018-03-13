@@ -28,11 +28,13 @@ public:
 
   float m_angle;
 
+  //position
+  ngl::Vec3 m_pos;
+  //velocity
+  ngl::Vec3 m_vel;
+
 private:
-    //position
-    ngl::Vec3 m_pos;
-    //velocity
-    ngl::Vec3 m_vel;
+
 
     ngl::Vec3 max_vel;
 

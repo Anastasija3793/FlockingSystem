@@ -207,15 +207,52 @@ void NGLScene::paintGL()
 
 	switch(m_selectedObject)
 	{
-        case 0 : m_flock->draw(m_mouseGlobalTX); break;
+        case 0 :
+            if(m_align == true)
+            {
+                m_flock->align();
+            }
+            else
+            {
+                m_flock->draw(m_mouseGlobalTX);
+            };
+        break;
         //case 0 : m_emitter->draw(); break;
         //case 0 : prim->draw("teapot"); break;
-		case 1 : prim->draw("sphere"); break;
+        case 1 : prim->draw("sphere"); break;
         //case 2 : prim->draw("cube"); break;
         case 2 : prim->draw("cone"); break;
 	}
+
+
+
     m_text->renderText(10,10,"Flocking System"); //Qt Gui Demo
 }
+
+//void NGLScene::keyPressEvent(QKeyEvent *_event)
+//{
+//  // this method is called every time the main window recives a key event.
+//  // we then switch on the key value and set the camera in the GLWindow
+//  switch (_event->key())
+//  {
+//  // escape key to quite
+//  case Qt::Key_Escape : QGuiApplication::exit(EXIT_SUCCESS); break;
+//  // show full screen
+//  case Qt::Key_F : showFullScreen(); break;
+//  // show windowed
+//  case Qt::Key_N : showNormal(); break;
+//  //case  Qt::Key_Space : m_animate^=true; break;
+//  //case Qt::Key_S : m_checkSphereSphere^=true; break;
+//  //case Qt::Key_R : resetSpheres(); break;
+//  //case Qt::Key_Minus : removeSphere(); break;
+//  case Qt::Key_Plus : m_flock->addBoid(); break;
+
+//  default : break;
+//  }
+//  // finally update the GLWindow and re-draw
+//  //if (isExposed())
+//    update();
+//}
 
 
 
@@ -238,6 +275,12 @@ void NGLScene::timerEvent(QTimerEvent *_event )
 
 NGLScene::~NGLScene()
 {
+}
+
+void NGLScene::alignState(bool _mode)
+{
+    m_align=_mode;
+    update();
 }
 
 void NGLScene::toggleWireframe(bool _mode	 )
@@ -312,4 +355,17 @@ void NGLScene::setColour()
     shader->setUniform("Colour",colour.redF(),colour.greenF(),colour.blueF(),1.0f);
     update();
 	}
+}
+
+void NGLScene::add()
+{
+    m_flock->addBoid();
+    //m_flock->update();
+    update();
+}
+
+void NGLScene::remove()
+{
+    m_flock->removeBoid();
+    update();
 }

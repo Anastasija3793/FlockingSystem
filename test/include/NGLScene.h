@@ -77,9 +77,17 @@ public :
 	void setObjectMode(int _i);
 	/// @brief a slot to set the colour
 	void setColour();
+    ///add a boid
+    void add();
+    ///remove a boid
+    void remove();
+
+    void alignState(bool _mode);
 private :
 	/// @brief m_wireframe mode
 	bool m_wireframe;
+    /// @brief m_align mode
+    bool m_align;
 	/// @brief rotation data
   ngl::Vec3 m_rotation;
 	/// @brief scale data
@@ -132,6 +140,8 @@ private :
   /// @param _event the Qt Event structure
   void mouseReleaseEvent (QMouseEvent *_event );
   void wheelEvent( QWheelEvent* _event );
+
+  //void keyPressEvent(QKeyEvent *_event) override;
 
   //bbox
   std::unique_ptr<ngl::BBox> m_bbox;

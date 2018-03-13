@@ -24,10 +24,16 @@ public:
 
     void BBoxCollision();
     std::unique_ptr<ngl::BBox> m_bbox;
+
+    void align();
+
+    void addBoid();
+    void removeBoid();
 private :
       // @brief the position of the emitter
       //ngl::Vec3 m_pos;
       //ngl::Vec3 m_dir;
+      float max_speed;
 
       /// @brief the number of boids
       int m_numBoids;

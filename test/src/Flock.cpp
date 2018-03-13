@@ -1,4 +1,5 @@
 #include "Flock.h"
+#include <ngl/Random.h>
 
 Flock::Flock(ngl::Vec3 _pos, int _numBoids)
 {
@@ -28,12 +29,66 @@ void Flock::update()
 /// @brief a method to draw all the particles contained in the system
 void Flock::draw(const ngl::Mat4 &_globalMouseTx)
 {
+    //for(Boid &b : m_boids)
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].draw(_globalMouseTx);
             //m_bbox->draw();
     }
     //m_bbox->draw();
+}
+
+void Flock::align()
+{
+    ngl::Vec3 sum(0,0,0);
+    float neighbourDist=30;
+    max_speed=4;
+    int count=0;
+    //for(Boid &b : m_boids)
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        auto dist = m_boids[i].m_pos - m_boids[i+1].m_pos;
+        dist.normalize();
+        if(dist.length()>0 && dist.length()<neighbourDist)
+        {
+            sum+=m_boids[i].m_vel;
+            //++count;
+            m_boids.push_back(Boid(sum,this));
+        }
+    }
+
+//    if(count>0)
+//    {
+//        sum/=count;
+//        sum.normalize();
+//        sum*=max_speed;
+//        m_steer=average(sum,m_vel);
+//        //m_steer.limit by (maxforce)
+//        //apply force = steer
+//    }
+}
+
+void Flock::addBoid()
+{
+    //ngl::Vec3 newBoid;
+    //ngl::Random *rand=ngl::Random::instance();
+    //newBoid = rand->getRandomVec3();
+    m_boids.push_back(Boid(ngl::Vec3(0,0,0),this));
+
+    ++m_numBoids;
+}
+
+void Flock::removeBoid()
+{
+    std::vector<Boid>::iterator end=m_boids.end();
+    if(--m_numBoids == 0)
+    {
+        m_numBoids = 1;
+    }
+    else
+    {
+        m_boids.erase(end-1,end);
+    }
 }
 
 void Flock::BBoxCollision()

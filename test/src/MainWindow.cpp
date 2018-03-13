@@ -24,6 +24,11 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
   /// set the combo box index change signal
   connect(m_ui->m_objectSelection,SIGNAL(currentIndexChanged(int)),m_gl,SLOT(setObjectMode(int)));
   connect(m_ui->m_colour,SIGNAL(clicked()),m_gl,SLOT(setColour()));
+  /// add and remove boids
+  connect(m_ui->m_add,SIGNAL(clicked()),m_gl,SLOT(add()));
+  connect(m_ui->m_remove,SIGNAL(clicked()),m_gl,SLOT(remove()));
+  /// set flock alignment
+  connect(m_ui->m_align,SIGNAL(toggled(bool)),m_gl,SLOT(alignState(bool)));
 }
 
 MainWindow::~MainWindow()
