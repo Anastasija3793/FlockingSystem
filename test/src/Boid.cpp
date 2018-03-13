@@ -9,8 +9,6 @@
 
 #include "Flock.h"
 
-//DO all stuff here (flock is just for boidNumbers AND camera)
-
 Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 {
     //m_gravity=-9;//4.65;
@@ -100,6 +98,41 @@ void Boid::update()
     //std::cout<<"ForwardX= "<<m_forward.m_x;
 }
 
+void Boid::align()
+{
+    ngl::Vec3 sum(0,0,0);
+    float neighbourDist=30;
+    max_speed=4;
+    int count=0;
+
+    //for(Boid &n : m_neighbours)
+    for(int i=0; i<m_neighbours; ++i)
+    {
+        //distance between two boids
+        auto dist = m_pos - m_neighbours[i].m_pos;
+        dist.normalize();
+        if(dist.length()>0 && dist.length()<neighbourDist)
+        {
+            sum+=m_vel;
+            ++count;
+        }
+
+    if(count>0)
+    {
+        sum/=count;
+        sum.normalize();
+        sum*=max_speed;
+        //subdivide?
+       // m_boids[i].m_steer=average(sum,m_boids[i].m_vel);
+        m_steer= sum - m_vel;
+
+        //m_steer.limit by (maxforce)
+        //apply force = steer (acc to steer)
+    }
+    //m_boids[i].update();
+    }
+}
+
 //draw function with shader and camera
 //modified (start from jm)
 void Boid::draw(const ngl::Mat4 &_globalMouseTx)
@@ -122,7 +155,7 @@ void Boid::draw(const ngl::Mat4 &_globalMouseTx)
     MV.rotateX(m_angle); //180 to make it rotate "inside"
     MV.rotateY(m_angle);
     MV.rotateZ(m_angle);
-    //MV.scale(0.8,0.8,0.8);
+    MV.scale(0.5,0.5,0.5);
 
     MVP=m_flock->getCam()->getProjectionMatrix() *MV;
     normalMatrix=MV;

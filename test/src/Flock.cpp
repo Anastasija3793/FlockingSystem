@@ -18,11 +18,33 @@ Flock::~Flock()
 {
     //dctor
 }
+
+
+std::vector<Boid*> Flock::getNeighbours(int j)
+{
+    std::vector<Boid*> neighbours;
+    auto& thisBoid = m_boids[j];
+
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        if (i == j) continue;
+
+        auto dir = thisBoid.m_pos - m_boids[i].m_pos;
+        if (dir.length() < 30.f)
+        {
+            neighbours.push_back(&m_boids[i]);
+        }
+    }
+    return neighbours;
+}
+
 /// @brief a method to update each of the particles contained in the system
 void Flock::update()
 {
     for(int i=0; i<m_numBoids; ++i)
     {
+        auto neighbours = getNeighbours(i);
+        m_boids[i].setNeighbours(neighbours);
         m_boids[i].update();
     }
 }
@@ -38,35 +60,19 @@ void Flock::draw(const ngl::Mat4 &_globalMouseTx)
     //m_bbox->draw();
 }
 
-void Flock::align()
+void Flock::alignment()
 {
-    ngl::Vec3 sum(0,0,0);
-    float neighbourDist=30;
-    max_speed=4;
-    int count=0;
-    //for(Boid &b : m_boids)
     for(int i=0; i<m_numBoids; ++i)
     {
-        auto dist = m_boids[i].m_pos - m_boids[i+1].m_pos;
-        dist.normalize();
-        if(dist.length()>0 && dist.length()<neighbourDist)
-        {
-            sum+=m_boids[i].m_vel;
-            //++count;
-            m_boids.push_back(Boid(sum,this));
-        }
+        m_boids[i].align();
     }
-
-//    if(count>0)
-//    {
-//        sum/=count;
-//        sum.normalize();
-//        sum*=max_speed;
-//        m_steer=average(sum,m_vel);
-//        //m_steer.limit by (maxforce)
-//        //apply force = steer
-//    }
 }
+
+
+//void Flock::separate()
+//{
+//    //separation
+//}
 
 void Flock::addBoid()
 {

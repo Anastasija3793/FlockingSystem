@@ -25,7 +25,12 @@ public:
     void BBoxCollision();
     std::unique_ptr<ngl::BBox> m_bbox;
 
-    void align();
+    //std::vector<Boid&>m_neighbours;
+
+    void alignment();
+    void separate();
+
+    std::vector<Boid*> getNeighbours(int i);
 
     void addBoid();
     void removeBoid();

@@ -1,6 +1,7 @@
 #ifndef BOID_H
 #define BOID_H
 
+#include <vector>
 #include <ngl/Vec3.h>
 #include <ngl/Mat4.h>
 #include <ngl/Colour.h>
@@ -26,21 +27,26 @@ public:
   inline void setVel(ngl::Vec3 _v){m_vel=_v;}
   inline ngl::Vec3 getVel() const { return m_vel;}
 
-  float m_angle;
+  void setNeighbours(const std::vector<Boid*>& newNeighbours) {m_neighbours = newNeighbours;}
+
+  //neighbours
+  std::vector<Boid*>m_neighbours;
+
+
+  void align();
 
   //position
   ngl::Vec3 m_pos;
   //velocity
   ngl::Vec3 m_vel;
-
+  float m_angle;
+  ngl::Vec3 m_steer;
 private:
-
 
     ngl::Vec3 max_vel;
 
     ngl::Vec3 m_desired;
     ngl::Vec3 m_target;
-    ngl::Vec3 m_steer;
 
     bool m_hit;
     GLfloat m_radius;
@@ -53,10 +59,7 @@ private:
     float max_force;
 
     //ngl::Vec3 m_forward {1,0,1};
-
     //GLfloat m_gravity;
-
-
     //ngl::Vec3 m_rotation;
 
     const Flock *m_flock; //const?
