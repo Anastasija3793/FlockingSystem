@@ -101,15 +101,15 @@ void Boid::update()
 void Boid::align()
 {
     ngl::Vec3 sum(0,0,0);
-    float neighbourDist=30;
-    max_speed=4;
+    float neighbourDist=30.f;
+    //max_speed=4;
     int count=0;
 
     //for(Boid &n : m_neighbours)
-    for(int i=0; i<m_neighbours; ++i)
+    for(int i=0; i<m_neighbours.size(); ++i)
     {
         //distance between two boids
-        auto dist = m_pos - m_neighbours[i].m_pos;
+        auto dist = m_pos - (m_neighbours[i]->m_pos);
         dist.normalize();
         if(dist.length()>0 && dist.length()<neighbourDist)
         {

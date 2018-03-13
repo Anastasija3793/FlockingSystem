@@ -210,7 +210,7 @@ void NGLScene::paintGL()
         case 0 :
             if(m_align == true)
             {
-               // m_flock->align();
+                m_flock->alignment();
                 m_flock->draw(m_mouseGlobalTX);
             }
             else
