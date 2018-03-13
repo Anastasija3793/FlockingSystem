@@ -1,6 +1,9 @@
 #include "Flock.h"
 #include <ngl/Random.h>
 
+/// initial code from my first year assignment DustyParticles (link)
+/// BBoxCollision function (slightly modified) belongs to Jon Macey (link)
+
 Flock::Flock(ngl::Vec3 _pos, int _numBoids)
 {
    // m_pos=_pos;
@@ -19,7 +22,6 @@ Flock::~Flock()
     //dctor
 }
 
-
 std::vector<Boid*> Flock::getNeighbours(int j)
 {
     std::vector<Boid*> neighbours;
@@ -30,7 +32,7 @@ std::vector<Boid*> Flock::getNeighbours(int j)
         if (i == j) continue;
 
         auto dir = thisBoid.m_pos - m_boids[i].m_pos;
-        if (dir.length() < 30.f)
+        if (dir.length() < 0.5f)//0.3
         {
             neighbours.push_back(&m_boids[i]);
         }
@@ -68,11 +70,13 @@ void Flock::alignment()
     }
 }
 
-
-//void Flock::separate()
-//{
-//    //separation
-//}
+void Flock::separation()
+{
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        m_boids[i].separate();
+    }
+}
 
 void Flock::addBoid()
 {

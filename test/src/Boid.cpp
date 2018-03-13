@@ -101,35 +101,44 @@ void Boid::update()
 void Boid::align()
 {
     ngl::Vec3 sum(0,0,0);
-    float neighbourDist=30.f;
+    //float neighbourDist=30.f;
     //max_speed=4;
     int count=0;
 
     //for(Boid &n : m_neighbours)
     for(int i=0; i<m_neighbours.size(); ++i)
     {
-        //distance between two boids
-        auto dist = m_pos - (m_neighbours[i]->m_pos);
-        dist.normalize();
-        if(dist.length()>0 && dist.length()<neighbourDist)
-        {
-            sum+=m_vel;
-            ++count;
-        }
+//        //distance between two boids
+//        auto dist = m_pos - (m_neighbours[i]->m_pos);
+//        dist.normalize();
+//        if(dist.length()>0 && dist.length()<neighbourDist)
+//        {
+//            sum+=m_vel;
+//            ++count;
+//        }
 
-    if(count>0)
-    {
-        sum/=count;
-        sum.normalize();
-        sum*=max_speed;
-        //subdivide?
-       // m_boids[i].m_steer=average(sum,m_boids[i].m_vel);
-        m_steer= sum - m_vel;
+//    if(count>0)
+//    {
+//        sum/=count;
+//        sum.normalize();
+//        sum*=max_speed;
+//        //subdivide?
+//       // m_boids[i].m_steer=average(sum,m_boids[i].m_vel);
+//        m_steer= sum - m_vel;
 
-        //m_steer.limit by (maxforce)
-        //apply force = steer (acc to steer)
-    }
+//        //m_steer.limit by (maxforce)
+//        //apply force = steer (acc to steer)
+//    }
+        m_vel = m_neighbours[i]->m_vel;
     //m_boids[i].update();
+    }
+}
+
+void Boid::separate()
+{
+    for(int i=0; i<m_neighbours.size(); ++i)
+    {
+        m_vel = m_neighbours[i]->m_vel*(-1);
     }
 }
 

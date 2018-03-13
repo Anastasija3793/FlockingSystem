@@ -83,11 +83,14 @@ public :
     void remove();
 
     void alignState(bool _mode);
+    void separateState(bool _mode);
 private :
 	/// @brief m_wireframe mode
 	bool m_wireframe;
     /// @brief m_align mode
     bool m_align;
+    /// @brief m_separate mode
+    bool m_separate;
 	/// @brief rotation data
   ngl::Vec3 m_rotation;
 	/// @brief scale data
@@ -141,8 +144,6 @@ private :
   void mouseReleaseEvent (QMouseEvent *_event );
   void wheelEvent( QWheelEvent* _event );
 
-  //void keyPressEvent(QKeyEvent *_event) override;
-
   //bbox
   std::unique_ptr<ngl::BBox> m_bbox;
   //mouse
@@ -166,7 +167,7 @@ private :
 
   void timerEvent(QTimerEvent *);
 
-  std::vector <Boid> m_boidArray;
+//  std::vector <Boid> m_boidArray;
   //void BBoxCollision();
 //  void checkCollisions();
 //  void updateScene();

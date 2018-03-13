@@ -26,7 +26,7 @@ public:
     std::unique_ptr<ngl::BBox> m_bbox;
 
     void alignment();
-    void separate();
+    void separation();
 
     std::vector<Boid*> getNeighbours(int i);
 

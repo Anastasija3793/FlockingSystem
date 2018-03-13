@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
   connect(m_ui->m_remove,SIGNAL(clicked()),m_gl,SLOT(remove()));
   /// set flock alignment
   connect(m_ui->m_align,SIGNAL(toggled(bool)),m_gl,SLOT(alignState(bool)));
+  /// set flock separation
+  connect(m_ui->m_separate,SIGNAL(toggled(bool)),m_gl,SLOT(separateState(bool)));
 }
 
 MainWindow::~MainWindow()

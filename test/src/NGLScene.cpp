@@ -208,15 +208,15 @@ void NGLScene::paintGL()
 	switch(m_selectedObject)
 	{
         case 0 :
-            if(m_align == true)
-            {
-                m_flock->alignment();
-                m_flock->draw(m_mouseGlobalTX);
-            }
-            else
-            {
-                m_flock->draw(m_mouseGlobalTX);
-            };
+        m_flock->draw(m_mouseGlobalTX);
+        if(m_align == true)
+        {
+            m_flock->alignment();
+        }
+        if(m_separate == true)
+        {
+            m_flock->separation();
+        }
         break;
         //case 0 : m_emitter->draw(); break;
         //case 0 : prim->draw("teapot"); break;
@@ -255,6 +255,25 @@ NGLScene::~NGLScene()
 void NGLScene::alignState(bool _mode)
 {
     m_align=_mode;
+    update();
+}
+
+void NGLScene::separateState(bool _mode)
+{
+    m_separate=_mode;
+    update();
+}
+
+void NGLScene::add()
+{
+    m_flock->addBoid();
+    //m_flock->update();
+    update();
+}
+
+void NGLScene::remove()
+{
+    m_flock->removeBoid();
     update();
 }
 
@@ -330,17 +349,4 @@ void NGLScene::setColour()
     shader->setUniform("Colour",colour.redF(),colour.greenF(),colour.blueF(),1.0f);
     update();
 	}
-}
-
-void NGLScene::add()
-{
-    m_flock->addBoid();
-    //m_flock->update();
-    update();
-}
-
-void NGLScene::remove()
-{
-    m_flock->removeBoid();
-    update();
 }
