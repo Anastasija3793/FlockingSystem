@@ -39,6 +39,24 @@ std::vector<Boid*> Flock::getNeighbours(int j)
     }
     return neighbours;
 }
+//for separation (make a radius of "neighbourhood" smaller)
+std::vector<Boid*> Flock::getNeighboursSep(int y)
+{
+    std::vector<Boid*> neighboursSep;
+    auto& thisBoidSep = m_boids[y];
+
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        if (i == y) continue;
+
+        auto dirSep = thisBoidSep.m_pos - m_boids[i].m_pos;
+        if (dirSep.length() < 0.3f)//0.3
+        {
+            neighboursSep.push_back(&m_boids[i]);
+        }
+    }
+    return neighboursSep;
+}
 
 /// @brief a method to update each of the particles contained in the system
 void Flock::update()
@@ -47,6 +65,10 @@ void Flock::update()
     {
         auto neighbours = getNeighbours(i);
         m_boids[i].setNeighbours(neighbours);
+
+        auto neighboursSep = getNeighboursSep(i);
+        m_boids[i].setNeighboursSep(neighboursSep);
+
         m_boids[i].update();
     }
 }

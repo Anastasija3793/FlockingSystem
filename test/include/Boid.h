@@ -28,9 +28,11 @@ public:
   inline ngl::Vec3 getVel() const { return m_vel;}
 
   void setNeighbours(const std::vector<Boid*>& newNeighbours) {m_neighbours = newNeighbours;}
+  void setNeighboursSep(const std::vector<Boid*>& newNeighboursSep) {m_neighboursSep = newNeighboursSep;}
 
   //neighbours
   std::vector<Boid*>m_neighbours;
+  std::vector<Boid*>m_neighboursSep;
 
 
   void align();

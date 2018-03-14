@@ -30,6 +30,7 @@ public:
     void cohesion();
 
     std::vector<Boid*> getNeighbours(int i);
+    std::vector<Boid*> getNeighboursSep(int y);
 
     void addBoid();
     void removeBoid();
