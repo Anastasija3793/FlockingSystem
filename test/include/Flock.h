@@ -27,6 +27,7 @@ public:
 
     void alignment();
     void separation();
+    void cohesion();
 
     std::vector<Boid*> getNeighbours(int i);
 
@@ -36,7 +37,7 @@ private :
       // @brief the position of the emitter
       //ngl::Vec3 m_pos;
       //ngl::Vec3 m_dir;
-      float max_speed;
+      //float max_speed;
 
       /// @brief the number of boids
       int m_numBoids;

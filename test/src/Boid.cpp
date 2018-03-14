@@ -79,6 +79,8 @@ Boid::Boid()
 
 void Boid::update()
 {
+    max_speed = 4;
+    max_force = 0.1;
     //m_forward=m_vel;
     m_vel+=m_acc;
 
@@ -100,10 +102,10 @@ void Boid::update()
 
 void Boid::align()
 {
-    ngl::Vec3 sum(0,0,0);
+    //ngl::Vec3 sum(0,0,0);
     //float neighbourDist=30.f;
     //max_speed=4;
-    int count=0;
+    //int count=0;
 
     //for(Boid &n : m_neighbours)
     for(int i=0; i<m_neighbours.size(); ++i)
@@ -130,7 +132,10 @@ void Boid::align()
 //        //apply force = steer (acc to steer)
 //    }
         m_vel = m_neighbours[i]->m_vel;
-    //m_boids[i].update();
+        //m_desired = m_neighbours[i]->m_desired;
+        max_speed = m_neighbours[i]->max_speed;
+        max_force = m_neighbours[i]->max_force;
+        //m_steer = m_neighbours[i]->m_steer;
     }
 }
 
@@ -139,6 +144,20 @@ void Boid::separate()
     for(int i=0; i<m_neighbours.size(); ++i)
     {
         m_vel = m_neighbours[i]->m_vel*(-1);
+        //max_force = (m_neighbours[i]->max_force)/200;
+        //m_neighbours[i]->max_speed = 0;
+        //m_neighbours[i]->max_force = 0;
+        //max_force/=200;
+        //m_desired = m_neighbours[i]->m_desired*(-1);
+        //m_target = -m_target;
+    }
+}
+
+void Boid::centre()
+{
+    for(int i=0; i<m_neighbours.size(); ++i)
+    {
+        m_pos = m_neighbours[i]->m_pos;
     }
 }
 

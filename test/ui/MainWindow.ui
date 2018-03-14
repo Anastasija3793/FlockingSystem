@@ -195,7 +195,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -261,6 +261,13 @@
          </property>
         </widget>
        </item>
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="m_centre">
+         <property name="text">
+          <string>Cohesion</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -272,7 +279,7 @@
      <x>0</x>
      <y>0</y>
      <width>1138</width>
-     <height>28</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

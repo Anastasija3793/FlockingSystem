@@ -78,6 +78,14 @@ void Flock::separation()
     }
 }
 
+void Flock::cohesion()
+{
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        m_boids[i].centre();
+    }
+}
+
 void Flock::addBoid()
 {
     //ngl::Vec3 newBoid;

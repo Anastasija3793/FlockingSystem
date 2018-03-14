@@ -217,6 +217,10 @@ void NGLScene::paintGL()
         {
             m_flock->separation();
         }
+        if(m_centre == true)
+        {
+            m_flock->cohesion();
+        }
         break;
         //case 0 : m_emitter->draw(); break;
         //case 0 : prim->draw("teapot"); break;
@@ -261,6 +265,12 @@ void NGLScene::alignState(bool _mode)
 void NGLScene::separateState(bool _mode)
 {
     m_separate=_mode;
+    update();
+}
+
+void NGLScene::centreState(bool _mode)
+{
+    m_centre=_mode;
     update();
 }
 

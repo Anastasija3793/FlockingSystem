@@ -84,6 +84,7 @@ public :
 
     void alignState(bool _mode);
     void separateState(bool _mode);
+    void centreState(bool _mode);
 private :
 	/// @brief m_wireframe mode
 	bool m_wireframe;
@@ -91,6 +92,8 @@ private :
     bool m_align;
     /// @brief m_separate mode
     bool m_separate;
+    /// @brief m_centre mode
+    bool m_centre;
 	/// @brief rotation data
   ngl::Vec3 m_rotation;
 	/// @brief scale data

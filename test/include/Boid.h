@@ -35,6 +35,7 @@ public:
 
   void align();
   void separate();
+  void centre();
 
   //position
   ngl::Vec3 m_pos;
