@@ -146,9 +146,9 @@ void Boid::wander()
     //displacement
     ngl::Vec3 disp=rand->getRandomVec3();
     disp.normalize();
-    disp*=R;
+    disp*=R * 0.5f * 4 * M_PI; //2
     m_vel=(m_target + disp) - m_desired;
-    m_vel*=0.01;
+    m_vel*=0.01; //0.001
 }
 
 //draw function with shader and camera
