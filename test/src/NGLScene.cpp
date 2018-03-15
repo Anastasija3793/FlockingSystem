@@ -209,18 +209,31 @@ void NGLScene::paintGL()
 	{
         case 0 :
         m_flock->draw(m_mouseGlobalTX);
+        m_flock->normal();
+        if(m_steer == true)
+        {
+            m_flock->steer();
+        }
         if(m_align == true)
         {
             m_flock->alignment();
         }
+        //else
         if(m_separate == true)
         {
             m_flock->separation();
         }
+        //else
         if(m_centre == true)
         {
             m_flock->cohesion();
         }
+        //else
+        if(m_goal == true)
+        {
+            m_flock->wandering();
+        }
+        //else
         break;
         //case 0 : m_emitter->draw(); break;
         //case 0 : prim->draw("teapot"); break;
@@ -246,7 +259,6 @@ void NGLScene::timerEvent(QTimerEvent *_event )
         //updateScene();
         update();
     }
-
         // re-draw GL
 }
 
@@ -254,6 +266,12 @@ void NGLScene::timerEvent(QTimerEvent *_event )
 
 NGLScene::~NGLScene()
 {
+}
+
+void NGLScene::steerState(bool _mode)
+{
+    m_steer=_mode;
+    update();
 }
 
 void NGLScene::alignState(bool _mode)
@@ -271,6 +289,12 @@ void NGLScene::separateState(bool _mode)
 void NGLScene::centreState(bool _mode)
 {
     m_centre=_mode;
+    update();
+}
+
+void NGLScene::goalSeekState(bool _mode)
+{
+    m_goal=_mode;
     update();
 }
 

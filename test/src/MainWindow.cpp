@@ -18,21 +18,25 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
   connect(m_ui->m_scaleY,SIGNAL(valueChanged(double)),m_gl,SLOT(setYScale(double)));
   connect(m_ui->m_scaleZ,SIGNAL(valueChanged(double)),m_gl,SLOT(setZScale(double)));
   /// set the position signals
-  connect(m_ui->m_positionX,SIGNAL(valueChanged(double)),m_gl,SLOT(setXPosition(double)));
-  connect(m_ui->m_positionY,SIGNAL(valueChanged(double)),m_gl,SLOT(setYPosition(double)));
-  connect(m_ui->m_positionZ,SIGNAL(valueChanged(double)),m_gl,SLOT(setZPosition(double)));
+  //connect(m_ui->m_positionX,SIGNAL(valueChanged(double)),m_gl,SLOT(setXPosition(double)));
+  //connect(m_ui->m_positionY,SIGNAL(valueChanged(double)),m_gl,SLOT(setYPosition(double)));
+  //connect(m_ui->m_positionZ,SIGNAL(valueChanged(double)),m_gl,SLOT(setZPosition(double)));
   /// set the combo box index change signal
   connect(m_ui->m_objectSelection,SIGNAL(currentIndexChanged(int)),m_gl,SLOT(setObjectMode(int)));
   connect(m_ui->m_colour,SIGNAL(clicked()),m_gl,SLOT(setColour()));
   /// add and remove boids
   connect(m_ui->m_add,SIGNAL(clicked()),m_gl,SLOT(add()));
   connect(m_ui->m_remove,SIGNAL(clicked()),m_gl,SLOT(remove()));
+  /// set flock steering
+  connect(m_ui->m_steer,SIGNAL(toggled(bool)),m_gl,SLOT(steerState(bool)));
   /// set flock alignment
   connect(m_ui->m_align,SIGNAL(toggled(bool)),m_gl,SLOT(alignState(bool)));
   /// set flock separation
   connect(m_ui->m_separate,SIGNAL(toggled(bool)),m_gl,SLOT(separateState(bool)));
   /// set flock cohesion
   connect(m_ui->m_centre,SIGNAL(toggled(bool)),m_gl,SLOT(centreState(bool)));
+  /// set flock seek goal
+  connect(m_ui->m_goal,SIGNAL(toggled(bool)),m_gl,SLOT(goalSeekState(bool)));
 }
 
 MainWindow::~MainWindow()

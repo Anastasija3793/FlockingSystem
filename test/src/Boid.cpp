@@ -21,39 +21,50 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
     //m_target.set(-30,30,0);
 
     max_speed = 4;
-    max_force = 0.1;
-    //max_speed = 0.05;
-    //max_force = 20;
+    max_force = 0.03; //0.1
 
-    //random direction - look in the internet
+    //random velocity & position
     ngl::Random *rand=ngl::Random::instance();
 
-    //for(float k=-9.5;k<10; k+=1)
-    //{
     m_radius=rand->randomPositiveNumber(2)+0.5f;
         //m_forward.normalize();
-        m_pos=rand->getRandomVec3();
-        //m_pos.set(-10,0,0);
-        //m_vel.set(0,0,0); //-0.5
+    m_pos=rand->getRandomVec3();
         //m_vel=rand->getRandomNormalizedVec3();
-        m_vel=rand->getRandomVec3();
-        m_vel *=0.05;
-        m_target=rand->getRandomVec3();
-    //}
+    m_vel=rand->getRandomVec3();
+    m_vel *=0.05;
 
-    //angle to face direction
-    //m_angle=ngl::degrees(acos(m_vel.dot(m_forward)/(m_vel.length()*m_forward.length())));
+    m_flock=_flock;
+    //m_acc*=0;
+    m_hit=false;
+}
+
+Boid::Boid()
+{
+    m_hit=false;
+}
+
+void Boid::applyForce(ngl::Vec3 force)
+{
+    m_acc+=force;
+}
+
+void Boid::normal()
+{
+    m_pos+=m_vel;
+}
+
+void Boid::steer()
+{
+    ngl::Random *rand=ngl::Random::instance();
+    m_target=rand->getRandomVec3();
+    //m_target.set(-3,10,0);
 
     m_desired = m_target - m_pos;
     m_desired.normalize();
-//    auto d = m_desired;
-//    d.normalize();
 
 
     m_desired*= max_speed;
     m_steer = m_desired - m_vel;
-//    auto copySteer = m_steer;
-//    copySteer.normalize();
     m_steer.normalize();
 
     // if statement for limiting steering by max force
@@ -64,24 +75,12 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
         NormS.normalize();
         m_steer = NormS * max_force;
     }
-
-
-    m_acc+=m_steer;
-    m_flock=_flock;
-
-    m_hit=false;
-}
-
-Boid::Boid()
-{
-    m_hit=false;
+    //m_acc+=m_steer;
+    applyForce(m_steer);
 }
 
 void Boid::update()
 {
-    max_speed = 4;
-    max_force = 0.1;
-    //m_forward=m_vel;
     m_vel+=m_acc;
 
     // if statement for limiting velocity by max speed
@@ -95,9 +94,6 @@ void Boid::update()
 
     m_pos+=m_vel;
     m_acc*=0;
-
-    //std::cout<<"Angle= "<<m_angle;
-    //std::cout<<"ForwardX= "<<m_forward.m_x;
 }
 
 void Boid::align()
@@ -106,8 +102,10 @@ void Boid::align()
     {
         m_vel = m_neighbours[i]->m_vel;
         //m_desired = m_neighbours[i]->m_desired;
-        max_speed = m_neighbours[i]->max_speed;
-        max_force = m_neighbours[i]->max_force;
+        //max_speed = m_neighbours[i]->max_speed;
+        //max_force = m_neighbours[i]->max_force;
+        //m_acc = m_neighbours[i]->m_acc*2;
+        //m_acc = 0.002;
         //m_steer = m_neighbours[i]->m_steer;
     }
 }
@@ -127,6 +125,28 @@ void Boid::centre()
     {
         m_pos = m_neighbours[i]->m_pos;
     }
+}
+
+void Boid::goal()
+{
+    //for(int i=0; i<m_neighbours.size(); ++i)
+    //{
+        //m_target = m_neighbours[i]->m_target;
+        m_target.set(-30,30,0);
+        applyForce(m_steer);
+        //m_desired.set(-30,30,0);
+        //m_vel.set(0,0,0);
+    //}
+}
+
+void Boid::wander()
+{
+//    ngl::Vec3 circleCentre;
+//    circleCentre = m_vel;
+//    circleCentre.normalize();
+    ngl::Random *rand=ngl::Random::instance();
+    float r = (rand->randomNumber(2)+0.5f * 2 * M_PI);
+    m_steer.set(cos(r),sin(r),cos(r));
 }
 
 //draw function with shader and camera

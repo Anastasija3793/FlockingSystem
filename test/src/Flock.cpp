@@ -69,6 +69,8 @@ void Flock::update()
         auto neighboursSep = getNeighboursSep(i);
         m_boids[i].setNeighboursSep(neighboursSep);
 
+        //m_boids[i].m_acc*=0;
+
         m_boids[i].update();
     }
 }
@@ -84,11 +86,28 @@ void Flock::draw(const ngl::Mat4 &_globalMouseTx)
     //m_bbox->draw();
 }
 
+void Flock::normal()
+{
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        m_boids[i].normal();
+    }
+}
+
+void Flock::steer()
+{
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        m_boids[i].steer();
+    }
+}
+
 void Flock::alignment()
 {
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].align();
+        //m_boids[i].m_acc=0.002;
     }
 }
 
@@ -97,6 +116,7 @@ void Flock::separation()
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].separate();
+        //m_boids[i].m_acc=0.002;
     }
 }
 
@@ -105,6 +125,23 @@ void Flock::cohesion()
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].centre();
+        //m_boids[i].m_acc=0.002;
+    }
+}
+
+void Flock::goalSeek()
+{
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        m_boids[i].goal();
+    }
+}
+
+void Flock::wandering()
+{
+    for(int i=0; i<m_numBoids; ++i)
+    {
+        m_boids[i].wander();
     }
 }
 

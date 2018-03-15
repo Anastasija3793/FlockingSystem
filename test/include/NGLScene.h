@@ -82,18 +82,24 @@ public :
     ///remove a boid
     void remove();
 
+    void steerState(bool _mode);
     void alignState(bool _mode);
     void separateState(bool _mode);
     void centreState(bool _mode);
+    void goalSeekState(bool _mode);
 private :
 	/// @brief m_wireframe mode
 	bool m_wireframe;
+    /// @brief m_steer mode
+    bool m_steer = false;
     /// @brief m_align mode
-    bool m_align;
+    bool m_align = false;
     /// @brief m_separate mode
-    bool m_separate;
+    bool m_separate = false;
     /// @brief m_centre mode
-    bool m_centre;
+    bool m_centre = false;
+    /// @brief m_goal mode
+    bool m_goal = false;
 	/// @brief rotation data
   ngl::Vec3 m_rotation;
 	/// @brief scale data
@@ -169,12 +175,6 @@ private :
   //ngl::Vec3 m_wind;
 
   void timerEvent(QTimerEvent *);
-
-//  std::vector <Boid> m_boidArray;
-  //void BBoxCollision();
-//  void checkCollisions();
-//  void updateScene();
-
 
 };
 

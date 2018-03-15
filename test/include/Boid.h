@@ -35,9 +35,14 @@ public:
   std::vector<Boid*>m_neighboursSep;
 
 
+  void normal();
   void align();
   void separate();
   void centre();
+  void steer();
+  void applyForce(ngl::Vec3 force);
+  void goal();
+  void wander();
 
   //position
   ngl::Vec3 m_pos;
@@ -45,30 +50,28 @@ public:
   ngl::Vec3 m_vel;
   float m_angle;
   ngl::Vec3 m_steer;
+
+  //acceleration
+  ngl::Vec3 m_acc;
+
+  ngl::Vec3 m_target;
 private:
 
     ngl::Vec3 max_vel;
 
     ngl::Vec3 m_desired;
-    ngl::Vec3 m_target;
 
     bool m_hit;
     GLfloat m_radius;
 
-    //direction
-    //ngl::Vec3 m_dir;
-    //acceleration
-    ngl::Vec3 m_acc;
     float max_speed;
     float max_force;
 
     //ngl::Vec3 m_forward {1,0,1};
     //GLfloat m_gravity;
-    //ngl::Vec3 m_rotation;
 
     const Flock *m_flock; //const?
 };
-
 
 
 #endif // BOID_H

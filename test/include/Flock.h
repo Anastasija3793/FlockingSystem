@@ -25,9 +25,13 @@ public:
     void BBoxCollision();
     std::unique_ptr<ngl::BBox> m_bbox;
 
+    void normal();
+    void steer();
     void alignment();
     void separation();
     void cohesion();
+    void goalSeek();
+    void wandering();
 
     std::vector<Boid*> getNeighbours(int i);
     std::vector<Boid*> getNeighboursSep(int y);
