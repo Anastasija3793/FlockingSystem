@@ -231,6 +231,10 @@ void NGLScene::paintGL()
         //else
         if(m_goal == true)
         {
+            m_flock->goalSeek();
+        }
+        if(m_wander == true)
+        {
             m_flock->wandering();
         }
         //else
@@ -295,6 +299,12 @@ void NGLScene::centreState(bool _mode)
 void NGLScene::goalSeekState(bool _mode)
 {
     m_goal=_mode;
+    update();
+}
+
+void NGLScene::wanderState(bool _mode)
+{
+    m_wander=_mode;
     update();
 }
 

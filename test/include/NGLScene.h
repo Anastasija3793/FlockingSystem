@@ -87,6 +87,7 @@ public :
     void separateState(bool _mode);
     void centreState(bool _mode);
     void goalSeekState(bool _mode);
+    void wanderState(bool _mode);
 private :
 	/// @brief m_wireframe mode
 	bool m_wireframe;
@@ -100,6 +101,8 @@ private :
     bool m_centre = false;
     /// @brief m_goal mode
     bool m_goal = false;
+    /// @brief m_goal mode
+    bool m_wander = false;
 	/// @brief rotation data
   ngl::Vec3 m_rotation;
 	/// @brief scale data

@@ -37,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
   connect(m_ui->m_centre,SIGNAL(toggled(bool)),m_gl,SLOT(centreState(bool)));
   /// set flock seek goal
   connect(m_ui->m_goal,SIGNAL(toggled(bool)),m_gl,SLOT(goalSeekState(bool)));
+  /// set flock wandering
+  connect(m_ui->m_wander,SIGNAL(toggled(bool)),m_gl,SLOT(wanderState(bool)));
 }
 
 MainWindow::~MainWindow()

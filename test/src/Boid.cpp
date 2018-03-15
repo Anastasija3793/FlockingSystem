@@ -12,7 +12,6 @@
 Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 {
     //m_gravity=-9;//4.65;
-    //do random position for each boid
     m_pos=_pos;
     //_pos=m_pos;
     m_angle=360;
@@ -28,10 +27,12 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
 
     m_radius=rand->randomPositiveNumber(2)+0.5f;
         //m_forward.normalize();
+    //random position
     m_pos=rand->getRandomVec3();
         //m_vel=rand->getRandomNormalizedVec3();
     m_vel=rand->getRandomVec3();
     m_vel *=0.05;
+    m_target=rand->getRandomVec3();
 
     m_flock=_flock;
     //m_acc*=0;
@@ -61,7 +62,6 @@ void Boid::steer()
 
     m_desired = m_target - m_pos;
     m_desired.normalize();
-
 
     m_desired*= max_speed;
     m_steer = m_desired - m_vel;
@@ -129,24 +129,33 @@ void Boid::centre()
 
 void Boid::goal()
 {
-    //for(int i=0; i<m_neighbours.size(); ++i)
-    //{
-        //m_target = m_neighbours[i]->m_target;
-        m_target.set(-30,30,0);
-        applyForce(m_steer);
-        //m_desired.set(-30,30,0);
-        //m_vel.set(0,0,0);
-    //}
+    //need to fix
+    //maybe apply to random sphere?
+    m_target.set(-30,30,0);
 }
 
 void Boid::wander()
 {
-//    ngl::Vec3 circleCentre;
-//    circleCentre = m_vel;
-//    circleCentre.normalize();
+//    float r = (rand->randomNumber(2)+0.5f * 2 * M_PI);
+//    m_steer.set(cos(r),sin(r),cos(r));
+
     ngl::Random *rand=ngl::Random::instance();
-    float r = (rand->randomNumber(2)+0.5f * 2 * M_PI);
-    m_steer.set(cos(r),sin(r),cos(r));
+    float R = 2.0f;
+    int count = 0;
+    ngl::Vec3 targ = m_vel - m_pos;
+    //displacement
+    ngl::Vec3 disp=rand->getRandomVec3();
+    disp.normalize();
+    disp*=R;
+    m_vel=(m_target + disp) - m_pos;
+    m_vel*=0.05;
+    ++count;
+
+//    if (count > 100)
+//    {
+//        disp.set(-3,0,0);
+//        count = 0;
+//    }
 }
 
 //draw function with shader and camera
