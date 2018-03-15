@@ -132,6 +132,7 @@ void Boid::goal()
     //need to fix
     //maybe apply to random sphere?
     m_target.set(-30,30,0);
+    //m_target.set(sphere&);
 }
 
 void Boid::wander()
@@ -140,22 +141,14 @@ void Boid::wander()
 //    m_steer.set(cos(r),sin(r),cos(r));
 
     ngl::Random *rand=ngl::Random::instance();
-    float R = 2.0f;
-    int count = 0;
-    ngl::Vec3 targ = m_vel - m_pos;
+    float R = 3.0f;
+    //ngl::Vec3 targ = m_vel - m_pos;
     //displacement
     ngl::Vec3 disp=rand->getRandomVec3();
     disp.normalize();
     disp*=R;
-    m_vel=(m_target + disp) - m_pos;
-    m_vel*=0.05;
-    ++count;
-
-//    if (count > 100)
-//    {
-//        disp.set(-3,0,0);
-//        count = 0;
-//    }
+    m_vel=(m_target + disp) - m_desired;
+    m_vel*=0.01;
 }
 
 //draw function with shader and camera
