@@ -2,7 +2,7 @@
 
 ## Tests
 
-Tests folder contains tests for Flocking System libraries.
+TestsLib folder contains tests for Flocking System library.
 
 ## Demo
 
