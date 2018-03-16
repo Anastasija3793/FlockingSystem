@@ -26,6 +26,7 @@ Boid::Boid(ngl::Vec3 _pos, Flock *_flock)
     ngl::Random *rand=ngl::Random::instance();
 
     m_radius=rand->randomPositiveNumber(2)+0.5f;
+    //m_radius = 1;
         //m_forward.normalize();
     //random position
     m_pos=rand->getRandomVec3();
@@ -141,14 +142,14 @@ void Boid::wander()
 //    m_steer.set(cos(r),sin(r),cos(r));
 
     ngl::Random *rand=ngl::Random::instance();
-    float R = 3.0f;
+    float R = 10.0f; //3.0f
     //ngl::Vec3 targ = m_vel - m_pos;
     //displacement
     ngl::Vec3 disp=rand->getRandomVec3();
     disp.normalize();
     disp*=R * 0.5f * 4 * M_PI; //2
     m_vel=(m_target + disp) - m_desired;
-    m_vel*=0.01; //0.001
+    m_vel*=0.001; //0.01
 }
 
 //draw function with shader and camera
