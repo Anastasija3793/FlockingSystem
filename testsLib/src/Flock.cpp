@@ -1,27 +1,38 @@
+/// @file Flock.cpp
+/// @brief Library for creating a flock which contains boids with their attributes and sets of flocking behaviour rules
+/// @brief the idea and initial code is from my first year assignment DustyParticles (https://github.com/Anastasija3793/DustyParticles)
+/// @author Anastasija Belaka
+/// @author of BBoxCollision function (slightly modified) belongs to Jon Macey (https://github.com/NCCA/Collisions/tree/master/BoundingBox)
+/// @version 15.0
+/// @date 19/03/2018 Updated to NCCA Coding standard
+/// Revision History : https://github.com/Anastasija3793/FlockingSystem
+/// Initial Version 05/03/2018
+
 #include "Flock.h"
 #include <ngl/Random.h>
 
-/// initial code from my first year assignment DustyParticles (link)
-/// BBoxCollision function (slightly modified) belongs to Jon Macey (link)
-
-Flock::Flock(ngl::Vec3 _pos, int _numBoids)
+Flock::Flock(ngl::Vec3 _pos, ngl::Vec3 _target, int _numBoids)
 {
-   // m_pos=_pos;
-   // m_dir=_dir;
+    ngl::Random *rand=ngl::Random::instance();
+    auto randomVelocity = rand->getRandomVec3();
     for (int i=0; i< _numBoids; ++i)
     {
-    m_boids.push_back(Boid(_pos,this));
+    m_boids.push_back(Boid(_pos,randomVelocity,_target,this));
+    randomVelocity = rand->getRandomVec3();
     }
     m_numBoids=_numBoids;
-    m_bbox.reset( new ngl::BBox(ngl::Vec3(),12.0f,12.0f,12.0f));
-    //m_bbox->setDrawMode(GL_LINE);
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 Flock::~Flock()
 {
     //dctor
 }
-
+//----------------------------------------------------------------------------------------------------------------------
+void Flock::resetBBox()
+{
+    m_bbox.reset( new ngl::BBox(ngl::Vec3(),12.0f,12.0f,12.0f));
+}
+//----------------------------------------------------------------------------------------------------------------------
 std::vector<Boid*> Flock::getNeighbours(int j)
 {
     std::vector<Boid*> neighbours;
@@ -32,14 +43,17 @@ std::vector<Boid*> Flock::getNeighbours(int j)
         if (i == j) continue;
 
         auto dir = thisBoid.m_pos - m_boids[i].m_pos;
-        if (dir.length() < 0.5f)//0.3
+        // 0.5 is a radius of neighbourhood
+        if (dir.length() < 0.5f)
         {
             neighbours.push_back(&m_boids[i]);
         }
     }
     return neighbours;
 }
-//for separation (make a radius of "neighbourhood" smaller)
+//----------------------------------------------------------------------------------------------------------------------
+/// @brief neighbours for separation (make a radius of "neighbourhood" smaller)
+//----------------------------------------------------------------------------------------------------------------------
 std::vector<Boid*> Flock::getNeighboursSep(int y)
 {
     std::vector<Boid*> neighboursSep;
@@ -50,15 +64,17 @@ std::vector<Boid*> Flock::getNeighboursSep(int y)
         if (i == y) continue;
 
         auto dirSep = thisBoidSep.m_pos - m_boids[i].m_pos;
-        if (dirSep.length() < 0.3f)//0.3
+        // 0.3 is a radius of smaller neighbourhood
+        if (dirSep.length() < 0.3f)
         {
             neighboursSep.push_back(&m_boids[i]);
         }
     }
     return neighboursSep;
 }
-
-/// @brief a method to update each of the particles contained in the system
+//----------------------------------------------------------------------------------------------------------------------
+/// @brief a method to update each of the boids contained in the flocking system
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::update()
 {
     for(int i=0; i<m_numBoids; ++i)
@@ -69,23 +85,20 @@ void Flock::update()
         auto neighboursSep = getNeighboursSep(i);
         m_boids[i].setNeighboursSep(neighboursSep);
 
-        //m_boids[i].m_acc*=0;
-
         m_boids[i].update();
     }
 }
+//----------------------------------------------------------------------------------------------------------------------
 /// @brief a method to draw all the particles contained in the system
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::draw(const ngl::Mat4 &_globalMouseTx)
 {
-    //for(Boid &b : m_boids)
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].draw(_globalMouseTx);
-            //m_bbox->draw();
     }
-    //m_bbox->draw();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::normal()
 {
     for(int i=0; i<m_numBoids; ++i)
@@ -93,7 +106,7 @@ void Flock::normal()
         m_boids[i].normal();
     }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::steer()
 {
     for(int i=0; i<m_numBoids; ++i)
@@ -101,42 +114,31 @@ void Flock::steer()
         m_boids[i].steer();
     }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::alignment()
 {
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].align();
-        //m_boids[i].m_acc=0.002;
     }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::separation()
 {
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].separate();
-        //m_boids[i].m_acc=0.002;
     }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::cohesion()
 {
     for(int i=0; i<m_numBoids; ++i)
     {
         m_boids[i].centre();
-        //m_boids[i].m_acc=0.002;
     }
 }
-
-void Flock::goalSeek()
-{
-    for(int i=0; i<m_numBoids; ++i)
-    {
-        m_boids[i].goal();
-    }
-}
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::wandering()
 {
     for(int i=0; i<m_numBoids; ++i)
@@ -144,30 +146,29 @@ void Flock::wandering()
         m_boids[i].wander();
     }
 }
-
-void Flock::addBoid()
+//----------------------------------------------------------------------------------------------------------------------
+void Flock::addBoid(ngl::Vec3 _randomPos)
 {
-    //ngl::Vec3 newBoid;
-    //ngl::Random *rand=ngl::Random::instance();
-    //newBoid = rand->getRandomVec3();
-    m_boids.push_back(Boid(ngl::Vec3(0,0,0),this));
+    ngl::Random *rand=ngl::Random::instance();
+    auto randomVel = rand->getRandomVec3();
+    auto randomTar = rand->getRandomVec3();
+    m_boids.push_back(Boid(_randomPos,randomVel,randomTar,this));
 
     ++m_numBoids;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::removeBoid()
 {
-    std::vector<Boid>::iterator end=m_boids.end();
     if(--m_numBoids == 0)
     {
         m_numBoids = 1;
     }
     else
     {
-        m_boids.erase(end-1,end);
+        m_boids.pop_back();
     }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Flock::BBoxCollision()
 {
       //create an array of the extents of the bounding box
@@ -204,8 +205,10 @@ void Flock::BBoxCollision()
             ngl::Vec3 d =m_bbox->getNormalArray()[i]*x;
             b.setVel(b.getVel()-d);
             b.setHit();
+            //180 to make it rotate "inside"
             b.m_angle+=180;
           }//end of hit test
          }//end of each face test
         }//end of for
 }
+//----------------------------------------------------------------------------------------------------------------------

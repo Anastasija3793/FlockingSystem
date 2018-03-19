@@ -1,3 +1,12 @@
+/// @file NGLScene.cpp
+/// @brief NGLScene used to represent a demo of flocking system simulation
+/// @author of initial code - Jon Macey
+/// @author Modified by Anastasija Belaka
+/// @version 3.0
+/// @date 19/03/2018 Updated to NCCA Coding standard
+/// Revision History : https://github.com/Anastasija3793/FlockingSystem
+/// Initial Version 05/03/2018
+
 #include <QGuiApplication>
 #include <QMouseEvent>
 
@@ -10,6 +19,7 @@
 #include <ngl/Material.h>
 #include <ngl/ShaderLib.h>
 #include <QColorDialog>
+#include <ngl/Random.h>
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -100,19 +110,18 @@ void NGLScene::initializeGL()
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
   prim->createSphere("sphere",0.1,40);
   prim->createCone("cone",0.2,0.7f,20,20);
-  //prim->createLineGrid("wall", 10, 10, 5);
 
-//  m_wind.set(1,1,1);
-//  m_emitter.reset(new Emitter(ngl::Vec3(0,0,0),200,&m_wind)); //400
-//  m_emitter->setCam(&m_cam);
-//  m_emitter->setShaderName("Phong");
-
-  //m_flock.reset(new Flock(ngl::Vec3(0,0,0),ngl::Vec3(0,0,0),200));
-  m_flock.reset(new Flock(ngl::Vec3(0,0,0),300)); //100
+  // setting position and target for the flock (can be changed by user)
+  ngl::Vec3 pos(0,0,0);
+  ngl::Vec3 target(0,0,0);
+  // creating a new flock
+  m_flock.reset(new Flock(pos, target, 300));
+  // reseting bbox
+  m_flock->resetBBox();
   m_flock->setCam(&m_cam);
   m_flock->setShaderName("Phong");
 
-  //call again to draw properly
+  // call again to draw properly
   m_bbox.reset( new ngl::BBox(ngl::Vec3(),12.0f,12.0f,12.0f));
   m_bbox->setDrawMode(GL_LINE);
 
@@ -120,9 +129,7 @@ void NGLScene::initializeGL()
   m_text->setScreenSize(this->size().width(),this->size().height());
   m_text->setColour(1.0,1.0,0.0);
 
-  //glViewport(0,0,width(),height());
   m_particleTimer=startTimer(20);
-  //update();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -135,7 +142,7 @@ void NGLScene::resizeGL( int _w, int _h )
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::loadMatricesToShader()
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
@@ -148,11 +155,6 @@ void NGLScene::loadMatricesToShader()
   M=m_mouseGlobalTX*m_transform.getMatrix();
   MV=m_cam.getViewMatrix()*M;
   MVP=m_cam.getProjectionMatrix() *MV;
-  //-----
-//  M = m_mouseGlobalTX;
-//  MV = m_cam.getViewMatrix() * M;
-//  MVP = m_cam.getVPMatrix() * M;
-  //-----
 
   normalMatrix=MV;
   normalMatrix.inverse().transpose();
@@ -181,7 +183,6 @@ void NGLScene::paintGL()
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
   (*shader)["Phong"]->use();
 
-//-----
   ngl::Mat4 rotX;
   ngl::Mat4 rotY;
   // create the rotation matrices
@@ -193,18 +194,12 @@ void NGLScene::paintGL()
   m_mouseGlobalTX.m_m[ 3 ][ 0 ] = m_modelPos.m_x;
   m_mouseGlobalTX.m_m[ 3 ][ 1 ] = m_modelPos.m_y;
   m_mouseGlobalTX.m_m[ 3 ][ 2 ] = m_modelPos.m_z;
-//-----
+
   m_transform.reset();
 
-//    m_transform.setPosition(m_position);
-//    m_transform.setScale(m_scale);
-//    m_transform.setRotation(m_rotation);
-    loadMatricesToShader();
+  loadMatricesToShader();
 
     m_bbox->draw();
-
-    //prim->draw("wall");
-
 	switch(m_selectedObject)
 	{
         case 0 :
@@ -218,171 +213,153 @@ void NGLScene::paintGL()
         {
             m_flock->alignment();
         }
-        //else
         if(m_separate == true)
         {
             m_flock->separation();
         }
-        //else
         if(m_centre == true)
         {
             m_flock->cohesion();
-        }
-        //else
-        if(m_goal == true)
-        {
-            m_flock->goalSeek();
         }
         if(m_wander == true)
         {
             m_flock->wandering();
         }
-        //else
         break;
-        //case 0 : m_emitter->draw(); break;
-        //case 0 : prim->draw("teapot"); break;
         case 1 : prim->draw("sphere"); break;
-        //case 2 : prim->draw("cube"); break;
         case 2 : prim->draw("cone"); break;
 	}
-
-
-
     m_text->renderText(10,10,"Flocking System"); //Qt Gui Demo
 }
 
-
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::timerEvent(QTimerEvent *_event )
 {
     if(_event->timerId() ==   m_particleTimer)
     {
-        //m_emitter->update();
         m_flock->update();
         m_flock->BBoxCollision();
-        //updateScene();
         update();
     }
         // re-draw GL
 }
-
-
-
+//----------------------------------------------------------------------------------------------------------------------
 NGLScene::~NGLScene()
 {
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::steerState(bool _mode)
 {
     m_steer=_mode;
     update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::alignState(bool _mode)
 {
     m_align=_mode;
     update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::separateState(bool _mode)
 {
     m_separate=_mode;
     update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::centreState(bool _mode)
 {
     m_centre=_mode;
     update();
 }
-
-void NGLScene::goalSeekState(bool _mode)
-{
-    m_goal=_mode;
-    update();
-}
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::wanderState(bool _mode)
 {
     m_wander=_mode;
     update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::add()
 {
-    m_flock->addBoid();
-    //m_flock->update();
+    ngl::Random *rand=ngl::Random::instance();
+    auto randPos = rand->getRandomVec3();
+    m_flock->addBoid(randPos);
     update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::remove()
 {
     m_flock->removeBoid();
     update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
+/// @note all functions below belongs to Jon Macey
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::toggleWireframe(bool _mode	 )
 {
 	m_wireframe=_mode;
 	update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setXRotation( double _x		)
 {
-	m_rotation.m_x=_x;
-	update();
+    m_rotation.m_x=_x;
+    update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setYRotation( double _y	)
 {
-	m_rotation.m_y=_y;
-	update();
+    m_rotation.m_y=_y;
+    update();
 }
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setZRotation( double _z )
 {
-	m_rotation.m_z=_z;
-	update();
+    m_rotation.m_z=_z;
+    update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setXScale( double _x	)
 {
-	m_scale.m_x=_x;
-	update();
+    m_scale.m_x=_x;
+    update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setYScale(	 double _y)
 {
-	m_scale.m_y=_y;
-	update();
+    m_scale.m_y=_y;
+    update();
 }
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setZScale( double _z )
 {
-	m_scale.m_z=_z;
-	update();
+    m_scale.m_z=_z;
+    update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setXPosition( double _x	)
 {
-	m_position.m_x=_x;
-	update();
+    m_position.m_x=_x;
+    update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setYPosition( double _y	)
 {
-	m_position.m_y=_y;
-	update();
+    m_position.m_y=_y;
+    update();
 }
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setZPosition( double _z	 )
 {
-	m_position.m_z=_z;
-	update();
+    m_position.m_z=_z;
+    update();
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setObjectMode(	int _i)
 {
 	m_selectedObject=_i;
 	update();
 }
+//----------------------------------------------------------------------------------------------------------------------
 void NGLScene::setColour()
 {
 	QColor colour = QColorDialog::getColor();
@@ -394,3 +371,6 @@ void NGLScene::setColour()
     update();
 	}
 }
+//----------------------------------------------------------------------------------------------------------------------
+/// end of functions
+//----------------------------------------------------------------------------------------------------------------------

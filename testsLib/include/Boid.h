@@ -1,77 +1,181 @@
 #ifndef BOID_H
 #define BOID_H
 
+/// @file Boid.h
+/// @brief Library for creating a boid with its attributes and sets of flocking behaviour rules
+/// @author Anastasija Belaka
+/// @version 15.0
+/// @date 19/03/2018 Updated to NCCA Coding standard
+/// Revision History : https://github.com/Anastasija3793/FlockingSystem
+/// Initial Version 05/03/2018
+
 #include <vector>
 #include <ngl/Vec3.h>
 #include <ngl/Mat4.h>
 #include <ngl/Colour.h>
 
 class Flock;
-
+//----------------------------------------------------------------------------------------------------------------------
+/// @class Boid "Boid.h"
+/// @brief Boid class which contains Boid constructor, attributes, behaviour/rules
+/// @author Anastasija Belaka
+/// @version 10.0
+/// @date  Updated to NCCA Coding standard
+/// Revision History : See https://github.com/Anastasija3793/FlockingSystem
+//----------------------------------------------------------------------------------------------------------------------
 class Boid
 {
 public:
-    Boid(ngl::Vec3 _pos, Flock *_flock);//ngl::Vec3 _vel);
-    Boid();
-
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief Boid constructor with its own values
+    /// @param[in] _pos position of the boid
+    /// @param[in] _vel velocity of the boid
+    /// @param[in] _target target towards which the boid is going to steer
+    /// @param[in] *_flock flock pointer
+    //----------------------------------------------------------------------------------------------------------------------
+    Boid(ngl::Vec3 _pos, ngl::Vec3 _vel, ngl::Vec3 _target, Flock *_flock);
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief update method for updating the boid
+    //----------------------------------------------------------------------------------------------------------------------
     void update();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief draw method for drawing the boid
+    /// @param _globalMouseTx is used to interact with camera by mouse
+    //----------------------------------------------------------------------------------------------------------------------
     void draw(const ngl::Mat4 &_globalMouseTx);
-
-    inline void reverse(){m_vel=m_vel*-1.0;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief setHit function sets the hit (used for BBox collision)
+    /// @param m_hit bool variable which sets "hit" to true
+    //----------------------------------------------------------------------------------------------------------------------
     inline void setHit(){m_hit=true;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief setNotHit function sets the hit (used for BBox collision)
+    /// @param m_hit bool variable which unsets "hit" to false
+    //----------------------------------------------------------------------------------------------------------------------
     inline void setNotHit(){m_hit=false;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief isHit function sets the hit (used for BBox collision)
+    /// @param m_hit variable returns the current state of hit
+    //----------------------------------------------------------------------------------------------------------------------
     inline bool isHit()const {return m_hit;}
-  inline ngl::Vec3 getPos() const {return m_pos;}
-  //inline ngl::Vec3 getNextPos() const {return m_nextPos;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief getPos function gets the position
+    /// @param m_pos position
+    //----------------------------------------------------------------------------------------------------------------------
+    inline ngl::Vec3 getPos() const {return m_pos;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief getRadius function gets the "radius" (used for BBox collision)
+    /// @param m_radius radius (prevents from collision)
+    //----------------------------------------------------------------------------------------------------------------------
     inline GLfloat getRadius() const {return m_radius;}
-  inline void setVel(ngl::Vec3 _v){m_vel=_v;}
-  inline ngl::Vec3 getVel() const { return m_vel;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief setVel function sets the velocity
+    /// @param m_vel velocity
+    //----------------------------------------------------------------------------------------------------------------------
+    inline void setVel(ngl::Vec3 _v){m_vel=_v;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief getVel function gets the velocity
+    /// @param m_vel velocity
+    //----------------------------------------------------------------------------------------------------------------------
+    inline ngl::Vec3 getVel() const { return m_vel;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief setNeighbours sets neighbours of the boid (used for flocking behaviour rules)
+    /// @param m_neighbours neighbours of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    void setNeighbours(const std::vector<Boid*>& newNeighbours) {m_neighbours = newNeighbours;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief setNeighboursSep sets neighbours of the boid but with smaller radius of "neighbourhood" (used for separation rules)
+    /// @param m_neighbours neighbours of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    void setNeighboursSep(const std::vector<Boid*>& newNeighboursSep) {m_neighboursSep = newNeighboursSep;}
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @param creating a new "container" with neighbours of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    std::vector<Boid*>m_neighbours;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @param creating another new "container" with neighbours of the boid but with smaller "neighbourhood"
+    /// radius (for separation (just makes it look better))
+    //----------------------------------------------------------------------------------------------------------------------
+    std::vector<Boid*>m_neighboursSep;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief normal function for normal/default behaviour of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    void normal();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief align function for creating the alignment rule
+    //----------------------------------------------------------------------------------------------------------------------
+    void align();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief separate function for creating the separation rule
+    //----------------------------------------------------------------------------------------------------------------------
+    void separate();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief centre function for creating the cohesion rule
+    //----------------------------------------------------------------------------------------------------------------------
+    void centre();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief steer function for creating the steering behaviour of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    void steer();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief wander function for creating the wandering behaviour of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    void wander();
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief applyForce function for applying the force to other functions/behaviours
+    /// @param force the behaviour will be passed as the force
+    //----------------------------------------------------------------------------------------------------------------------
+    void applyForce(ngl::Vec3 force);
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_pos position of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    ngl::Vec3 m_pos;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_vel velocity of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    ngl::Vec3 m_vel;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_steer the steering vector of the boid
+    //----------------------------------------------------------------------------------------------------------------------
+    ngl::Vec3 m_steer;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_acc acceleration
+    //----------------------------------------------------------------------------------------------------------------------
+    ngl::Vec3 m_acc;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_target the target towards which the boid is going to steer
+    //----------------------------------------------------------------------------------------------------------------------
+    ngl::Vec3 m_target;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_angle angle for rotating matrices
+    //----------------------------------------------------------------------------------------------------------------------
+    float m_angle;
 
-  void setNeighbours(const std::vector<Boid*>& newNeighbours) {m_neighbours = newNeighbours;}
-  void setNeighboursSep(const std::vector<Boid*>& newNeighboursSep) {m_neighboursSep = newNeighboursSep;}
-
-  //neighbours
-  std::vector<Boid*>m_neighbours;
-  std::vector<Boid*>m_neighboursSep;
-
-
-  void normal();
-  void align();
-  void separate();
-  void centre();
-  void steer();
-  void applyForce(ngl::Vec3 force);
-  void goal();
-  void wander();
-
-  //position
-  ngl::Vec3 m_pos;
-  //velocity
-  ngl::Vec3 m_vel;
-  float m_angle;
-  ngl::Vec3 m_steer;
-
-  //acceleration
-  ngl::Vec3 m_acc;
-
-  ngl::Vec3 m_target;
 private:
-
-    ngl::Vec3 max_vel;
-
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_desired desired velocity
+    //----------------------------------------------------------------------------------------------------------------------
     ngl::Vec3 m_desired;
-
-    bool m_hit;
-    GLfloat m_radius;
-
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief max_speed maximal speed used for limiting
+    //----------------------------------------------------------------------------------------------------------------------
     float max_speed;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief max_force maximal force used for limiting
+    //----------------------------------------------------------------------------------------------------------------------
     float max_force;
-
-    //ngl::Vec3 m_forward {1,0,1};
-    //GLfloat m_gravity;
-
-    const Flock *m_flock; //const?
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_hit for setting the hit value
+    //----------------------------------------------------------------------------------------------------------------------
+    bool m_hit;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief m_radius used for collision
+    //----------------------------------------------------------------------------------------------------------------------
+    GLfloat m_radius;
+    //----------------------------------------------------------------------------------------------------------------------
+    /// @brief *m_flock the flock (which contains all boids)
+    //----------------------------------------------------------------------------------------------------------------------
+    const Flock *m_flock;
 };
-
 
 #endif // BOID_H
